@@ -21,6 +21,8 @@ import Splash from '../../screens/Splash';
 import TVChannel from '../../screens/TVChannel';
 import AppColor from '../common/AppColors';
 import ChangePassword from '../../screens/ChangePassword';
+import SubCategory from '../../screens/SubCategory';
+import Category from '../../screens/Category';
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackScreen = () => (
@@ -64,6 +66,8 @@ function MainNavigator() {
 <MainStack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
     <MainStack.Screen name="Dashboard" component={TabNavigator} options={{ headerShown: false }} />
     <MainStack.Screen name="VideoPlayer" component={VideoPlayer} options={{ headerShown: false }} />
+    <MainStack.Screen name="Category" component={Category} options={{ headerShown: false }} />
+ <MainStack.Screen name="SubCategory" component={SubCategory} options={{ headerShown: false }} />
 
 </MainStack.Navigator>
   );

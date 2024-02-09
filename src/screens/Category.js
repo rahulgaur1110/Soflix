@@ -13,7 +13,7 @@ import { useIsFocused } from '@react-navigation/native'
 import Helper from '../assets/common/lib/Helper'
 
 
-const TVChannel = ({ navigation, route }) => {
+const Category = ({ navigation, route }) => {
     const isFocused = useIsFocused()
     const [data, setData] = useState(LocalData);
     const isCarousel = useRef(null);
@@ -106,7 +106,7 @@ const TVChannel = ({ navigation, route }) => {
     )
 }
 
-export default TVChannel
+export default Category
 
 const styles = StyleSheet.create({
     smallContainer: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 180,
         borderRadius: 5,
-        resizeMode: 'cover'
+        resizeMode: 'contain'
     },
     searchBox: {
         backgroundColor: AppColor.black,

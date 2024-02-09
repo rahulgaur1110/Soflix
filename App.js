@@ -10,20 +10,22 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Text,
+  View,
 
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
-import Dashboard from './src/screens/Dashboard';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainNavigator from './src/assets/navigation/MainNavigation';
+import WebView from 'react-native-webview';
 const Stack = createNativeStackNavigator();
 
 
 
 function App() {
-
+  // const videoUrl = 'https://www.artmostfair.online/iframe/vod/b7afe08b198ce4e24ed73fff160c0be7/5fc4a3dd-a2c7-4313-b383-737a31a3f00d';
 
   return (
     <>
@@ -31,6 +33,15 @@ function App() {
        <NavigationContainer>
         <MainNavigator/>
       </NavigationContainer> 
+        {/* <View style={{flex:1}}>
+          <Text>Hello</Text>
+      <WebView
+        source={{ uri: videoUrl }}
+        allowsFullscreenVideo={true}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+      />
+    </View> */}
       </>
   );
 }

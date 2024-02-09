@@ -15,7 +15,7 @@ const Watchlist = ({navigation}) => {
             <View>
                 
             <TouchableOpacity 
-            onPress={()=>navigation.navigate('VideoPlayer',{videoId: item.id})}
+            // onPress={()=>navigation.navigate('VideoPlayer',{videoId: item.id})}
             style={styles.catScroller} key={index}>
               <Image
                 source={item.image}
