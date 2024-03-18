@@ -7,6 +7,7 @@ import AppColor from '../assets/common/AppColors'
 import validationFunctions from '../assets/common/ValidateFunction'
 import Helper from '../assets/common/lib/Helper'
 import ApiUrl from '../assets/common/lib/ApiUrl'
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const ResetPassword = ({ navigation }) => {
     const [email, setEmail] = useState("");
@@ -46,9 +47,9 @@ const ResetPassword = ({ navigation }) => {
 }
 }
     return (
-        <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={{ opacity: 0.7 }}>
+        <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={AppStyle.imageContainer}>
 
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
 
                 <View style={{ }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -56,7 +57,17 @@ const ResetPassword = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 
-            </View>
+            </View> */}
+
+<View style={styles.header}>
+
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+    <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
+
+    </TouchableOpacity>
+
+
+</View>
 
             <Image style={[AppStyle.logo, { marginTop: 15 }]} source={AppImages.logo} />
             <View style={{ marginBottom: 30, marginTop: -20, alignItems: 'center' }}>
@@ -84,6 +95,13 @@ const ResetPassword = ({ navigation }) => {
 export default ResetPassword
 
 const styles = StyleSheet.create({
+    header: {
+        flexDirection:'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        // marginTop: 10,
+        height:80
+    },
     smallContainer: {
         justifyContent: 'center',
         alignItems: 'center',

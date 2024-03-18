@@ -13,7 +13,7 @@ const AppStyle = StyleSheet.create({
     flex:1,
     },
     imageContainer:{
-        opacity: 0.7,
+        opacity: 0.8,
     },
 
     container:{

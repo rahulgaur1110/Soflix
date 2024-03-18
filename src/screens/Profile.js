@@ -8,7 +8,7 @@ import AppColor from '../assets/common/AppColors'
 const Profile = ({navigation}) => {
     return (
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
-        imageStyle={{opacity:0.7}}
+        imageStyle={AppStyle.imageContainer}
         >
 
 

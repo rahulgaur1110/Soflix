@@ -1,4 +1,4 @@
-import { FlatList, Image, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, FlatList, Image, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Video from 'react-native-video'
 import Orientation from 'react-native-orientation-locker';
@@ -23,12 +23,29 @@ import WebView from 'react-native-webview';
 const VideoPlayer = ({ navigation, route }) => {
     const [height, setHeight] = useState();
     const [videoId, setVideoId] = useState(route.params.videoId);
+    const [playlistId, setPlaylistId] = useState(route.params.playlistId);
+
     const selectedVideo = LocalData.find((item) => item.id === videoId)
     // const commentData = selectedVideo.comments.commentData
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isLandscape, setIsLandscape] = useState(false);
     const [videoData, setVideoData] = useState([]);
     const [topMovieData, setTopMovieData] = useState([])
+    const [playlistData, setPlaylistData] = useState([])
+    const [episodeData, setEpisodeData] = useState([])
+
+    const [watchlist, setWatchlist] = useState(false);
+    const [playingIndex, setPlayingIndex] = useState();
+
+    const [showSkipButton, setShowSkipButton] = useState(false);
+    const [adIsPlaying, setAdIsPlaying] = useState(true);
+    const [videoIsPlaying, setVideoIsPlaying] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [skipTime, setSkipTime] = useState();
+
+    console.log('videoData:', videoData)
+    console.log('episodeData:', episodeData)
+    console.log('playlistData:', playlistData)
 
 
     const playerRef = useRef()
@@ -41,6 +58,8 @@ const VideoPlayer = ({ navigation, route }) => {
             };
         }, []),
     );
+
+
 
     const getVideoDetails = async () => {
 
@@ -55,14 +74,20 @@ const VideoPlayer = ({ navigation, route }) => {
                 Helper.banner_path = response.data.banner_path;
                 Helper.video_path = response.data.video_path;
                 Helper.video_cover_path = response.data.video_cover_path;
-                if (response.data.data[0]) {
+                if (response.data.data) {
                     setVideoData(response.data.data[0])
                     //   setVideReadyForWatch(true);
                     //   if (response.data.data[0].video_time.length > 0) {
                     //     setVideoResumeTime(response.data.data[0].video_time[0].time)
                     //   }
                 }
+                if (response.data.data[0].watchlist[0] != null || response.data.data[0].watchlist[0] != undefined) {
+                    setWatchlist(true)
 
+                } else {
+                    setWatchlist(false)
+
+                }
 
                 // Helper.hideLoader()
             }
@@ -79,30 +104,67 @@ const VideoPlayer = ({ navigation, route }) => {
         getTopMovies();
     };
 
+
+    const getPlaylist = async () => {
+
+        let data = {
+            "category_id": playlistId
+        }
+        Helper.makeRequest({ url: ApiUrl.VideoList, method: "POST", data: data }).then((response) => {
+
+            if (response.status == true) {
+                setPlaylistData(response.data.data.data)
+                setEpisodeData(response.data.data.data[0])
+                setPlayingIndex(0)
+            }
+            else {
+                Helper.showToast(response.message);
+
+            }
+        }).catch(err => {
+            Helper.showToast(err);
+        })
+    };
+
+    
     useEffect(() => {
+        if (route?.params?.isPartner) {
+            getPlaylist();
+        }
         getVideoDetails();
     }, [])
 
+
+if (!route.params.isPartner ) {
+    useEffect(() => {
+
+        setTimeout(() => {
+            setShowSkipButton(true)
+            setSkipTime(videoData.advertise_skip_time *1000)
+            // console.log('skipButton Time:', videoData.advertise_skip_time)
+        }, 10000); // amount of time the splash is shown from the time component is rendered
+
+    }, []);
+}
     const getTopMovies = async () => {
 
         let data = {
-          "type": "is_trending"
+            "type": "is_popular"
         }
         Helper.makeRequest({ url: ApiUrl.VideoList, method: "POST", data: data }).then((response) => {
-    
-          if (response.status == true) {
-            setTopMovieData(response.data.data.data)
-    console.log('Response:',response.data.data.data)
-          }
-          else {
-    
-            Helper.showToast(response.message);
-    
-          }
+
+            if (response.status == true) {
+                setTopMovieData(response.data.data.data)
+            }
+            else {
+
+                Helper.showToast(response.message);
+
+            }
         }).catch(err => {
-    
+
         })
-      };
+    };
 
 
     useEffect(() => {
@@ -130,6 +192,20 @@ const VideoPlayer = ({ navigation, route }) => {
         }
     };
 
+    const handleSkipButton = () => {
+        if (isFullScreen) {
+            Orientation.lockToPortrait();
+        } else {
+            Orientation.lockToLandscape();
+        }
+    };
+
+    const handleSkipAd = () => {
+        setShowSkipButton(false)
+        setVideoIsPlaying(true)
+        setAdIsPlaying(false)
+    }
+
     // const toggleFullScreen = () => {
     //     console.log(isFullScreen, Orientation.getInitialOrientation())
     //     if (isFullScreen) {
@@ -139,7 +215,21 @@ const VideoPlayer = ({ navigation, route }) => {
     //     }
     // };
 
+    function LoadingIndicatorView() {
+        return <ActivityIndicator color='#fab74e' size='large' style={styles.indicator} />
 
+    }
+
+    const ActivityIndicatorElement = () => {
+        return (
+            <View style={styles.activityIndicatorStyle}>
+                <ActivityIndicator
+                    color="#fab74e"
+                    size="large"
+                />
+            </View>
+        );
+    };
 
     const goBack = () => {
         navigation.goBack();
@@ -154,13 +244,39 @@ const VideoPlayer = ({ navigation, route }) => {
                     onPress={() => navigation.push('VideoPlayer', { videoId: item.id })}
                     style={styles.catScroller} key={index}>
                     <Image
-                        source={{uri:item?.cover_path}}
+                        source={{ uri: item?.cover_path }}
                         style={styles.trendThumbnail}
                     />
                     {/* <Text>{item.id}</Text> */}
                 </TouchableOpacity>
             </View>
         );
+    };
+
+    const addToWatchList = async () => {
+
+        let data = {
+            "video_id": videoId
+        }
+        Helper.makeRequest({ url: ApiUrl.AddRemoveWatchlist, method: "POST", data: data }).then((response) => {
+
+            if (response.status == true) {
+                // Helper.setData('userdata', response.data.user)
+                Helper.showToast(response.message);
+                if (watchlist) {
+                    setWatchlist(false)
+                } else {
+                    setWatchlist(true)
+                }
+
+            }
+            else {
+                Helper.showToast(response.message);
+
+            }
+        }).catch(err => {
+            Helper.hideLoader()
+        })
     };
 
     const showComments = ({ item, index }) => {
@@ -178,35 +294,51 @@ const VideoPlayer = ({ navigation, route }) => {
         );
     };
 
+    const onEpisodePress = (item, index) => {
+        console.log('Index:',index)
+        setEpisodeData(item)
+        setPlayingIndex(index)
+        // console.log('Episode2:', episodeData)
+
+    }
+
     const showEpisodes = ({ item, index }) => {
         return (
-            <View style={styles.episodeSection}>
+            <TouchableOpacity style={index === playingIndex ? [styles.episodeSection, {opacity:0.6}] : styles.episodeSection} 
+            onPress={()=>onEpisodePress(item, index)}>
                 <View style={styles.episodeDetails}>
-                    {/* <Image
-                        style={styles.play}
-                        source={require('../assets/Images/play.png')} /> */}
                     <Image
-                        source={item.image}
+                        style={styles.play}
+                        source={require('../assets/Images/play.png')} />
+                    <Image
+                        source={{
+                            uri: item.cover_path
+                        }}
                         style={styles.episodeThumbnail}
                     />
                 </View>
                 <View style={styles.episodeBox}>
-                    <Text style={styles.episodeName}>{item.eName}</Text>
-                    <Text style={styles.catDetails}>{item.duration}</Text>
-                    <Text style={styles.details}>
-                        Lorem ipsum dolor sit amet, consectetuer
-                        adipiscing elit, sed diam nonummy nibh euismod.
-                    </Text>
+                    <Text style={styles.episodeName}>{item.title}</Text>
+
+                    {item?.description &&
+
+                        <RenderHTML
+                            contentWidth={Constants.screenWidth / 2}
+                            source={{ html: item?.description }}
+                            tagsStyles={mixedStyle}
+                        />
+                    }
+
+
                 </View>
 
 
-            </View>
+            </TouchableOpacity>
         );
     };
 
-
     return (
-        <ImageBackground style={[AppStyle.mainContainer, { paddingHorizontal: 0, paddingTop: 0 }]} resizeMode="stretch" source={AppImages.background} imageStyle={{ opacity: 0.3, }}>
+        <ImageBackground style={[AppStyle.mainContainer, { paddingHorizontal: 0, paddingTop: 0 }]} resizeMode="stretch" source={AppImages.background} imageStyle={{ opacity: 0.7, }}>
             <TouchableOpacity onPress={() => goBack()}
                 style={{ position: 'absolute', top: 40, left: 10, zIndex: 1 }}
             >
@@ -221,32 +353,98 @@ const VideoPlayer = ({ navigation, route }) => {
             </TouchableOpacity>
 
 
+
+
             <View style={isFullScreen ? styles.videoFullContainer : styles.videoContainer}>
-                 {/* <Video
-                    source={{ uri: 'https://www.artmostfair.online/iframe/vod/b7afe08b198ce4e24ed73fff160c0be7/5fc4a3dd-a2c7-4313-b383-737a31a3f00d'}}
-                    style={isFullScreen ? styles.videoFullScreen : styles.videoStyle}
-                    controls={true}
-                    ref={playerRef}
-                    resizeMode="cover"
-                /> */}
-                <WebView
-        source={{
-          uri:
-          videoData.file_path,
-        }}
-        style={{ flex: 1,backgroundColor:'black' }}
-      />
+                {/* <ImageBackground source={AppImages.logo} style={{width:'100%', height:'100%'}} resizeMode="stretch" imageStyle={{width:300, height:180}}> */}
+                {showSkipButton && videoData?.advertise_enabled === 1 &&
+                    <TouchableOpacity onPress={handleSkipAd}
+                        style={styles.skipAdButton}
+                    >
+                        <Text style={styles.catDetails}>Skip Ad</Text>
+                    </TouchableOpacity>
+                }
+
+                {visible ? <ActivityIndicatorElement /> : null}
+
+                
+{route.params.isPartner ?
+(<>
+                {episodeData?.advertise_enabled === 1 && adIsPlaying && !videoIsPlaying ? (
+                    <WebView
+                        source={{
+                            uri:
+                                episodeData.advertise_url,
+                        }}
+                        style={{ flex: 1, backgroundColor: 'black' }}
+                        // renderLoading={this.LoadingIndicatorView}
+                        domStorageEnabled={true}
+                        onLoadStart={() => setVisible(true)}
+                        onLoad={() => setVisible(false)}
+                        // startInLoadingState
+                        javaScriptEnabled={true}
+                    />
+                ) : (
+                    <WebView
+                        source={{
+                            uri:
+                                episodeData.file_path,
+                        }}
+                        style={{ flex: 1, backgroundColor: 'black' }}
+                        // renderLoading={LoadingIndicatorView}
+                        // startInLoadingState={true}
+                        domStorageEnabled={true}
+                        onLoadStart={() => setVisible(true)}
+                        onLoad={() => setVisible(false)}
+                        javaScriptEnabled={true}
+                    />
+                )}
+                </>): (
+                    <>
+                {videoData?.advertise_enabled === 1 && adIsPlaying && !videoIsPlaying ? (
+                    <WebView
+                        source={{
+                            uri:
+                                videoData.advertise_url,
+                        }}
+                        style={{ flex: 1, backgroundColor: 'black' }}
+                        // renderLoading={this.LoadingIndicatorView}
+                        domStorageEnabled={true}
+                        onLoadStart={() => setVisible(true)}
+                        onLoad={() => setVisible(false)}
+                        // startInLoadingState
+                        javaScriptEnabled={true}
+                    />
+                ) : (
+                    <WebView
+                        source={{
+                            uri:
+                                videoData.file_path,
+                        }}
+                        style={{ flex: 1, backgroundColor: 'black' }}
+                        // renderLoading={LoadingIndicatorView}
+                        // startInLoadingState={true}
+                        domStorageEnabled={true}
+                        onLoadStart={() => setVisible(true)}
+                        onLoad={() => setVisible(false)}
+                        javaScriptEnabled={true}
+                    />
+                )}
+                </>
+                )
+                    }
             </View>
+
 
             {!isFullScreen &&
                 <ScrollView style={styles.container}>
-                    {videoData?.is_popular === 1 &&
+                    {playlistData.length > 0 &&
                         <View>
                             <View style={styles.headerBG}>
                                 <Text style={styles.title}>Playlist</Text>
                             </View>
                             <FlatList
-                                data={LocalData}
+                                data={playlistData}
                                 renderItem={showEpisodes}
                             />
 
@@ -261,30 +459,33 @@ const VideoPlayer = ({ navigation, route }) => {
                                 alignItems: 'flex-start',
                             }}>
                                 <Image style={{ width: Constants.screenWidth / 5, height: 130 }}
-                                    source={{ uri: videoData.cover_path }}
+                                    source={{ uri: route.params.isPartner ? episodeData.cover_path :videoData.cover_path }}
                                 />
                                 <View style={styles.headingDetails}>
-                                    <Text style={styles.title}>{videoData?.title}</Text>
-                                    <Text style={styles.catDetails}>{videoData?.langauges?.name}</Text>
-                                    <Text style={styles.catDetails}>{videoData?.year}</Text>
+                                    <Text style={styles.title}>{route.params.isPartner ? episodeData?.title : videoData?.title}</Text>
+                                    <Text style={styles.catDetails}>{route.params.isPartner ? episodeData?.langauges?.name : videoData?.langauges?.name}</Text>
+                                    <Text style={styles.catDetails}>{route.params.isPartner ? episodeData?.year : videoData?.year}</Text>
                                 </View>
                             </View>
-                            <TouchableOpacity style={[styles.watchList]}
+                            {!route.params.isPartner &&
+                            <TouchableOpacity style={[styles.watchList, { backgroundColor: watchlist == false ? AppColor.orange1 : "#444444" }]} onPress={addToWatchList}
 
                             >
                                 <Image source={AppImages.MenuAdd} />
-                                <Text style={{ color: AppColor.white, fontSize: 12 }}>Watchlist</Text>
+                                <Text style={{ color: AppColor.white, fontSize: 12 }}>{watchlist == false ? "Watchlist" : "Watchlisted"}</Text>
                             </TouchableOpacity>
+}
                         </View>
                         <View>
-            {videoData?.description &&
-              <RenderHTML
-                contentWidth={Constants.screenWidth / 2}
-                //   contentHeight={80}
-                source={{ html: videoData?.description }}
-              />
-             }
-          </View>
+                            {/* {videoData?.description || episodeData.description && */}
+
+                                <RenderHTML
+                                    contentWidth={Constants.screenWidth / 2}
+                                    source={{ html:  route.params.isPartner ? episodeData?.description : videoData?.description }}
+                                    tagsStyles={mixedStyle}
+                                />
+                           
+                        </View>
 
 
 
@@ -321,16 +522,12 @@ const VideoPlayer = ({ navigation, route }) => {
                         </View>
 
 
-                        <Text style={styles.heading}>Top  Trending</Text>
+                        <Text style={styles.heading}>Most Watched</Text>
                         <FlatList
                             keyExtractor={(item) => item.id}
-                            // keyExtractor={(item, index) => {
-                            //     const key = item.id || index.toString(); // Use index as fallback if id is missing or duplicate
-                            //     console.log("Key:", key);
-                            //     return key;
-                            // }}
+
                             data={topMovieData}
-                            renderItem={(item)=>showData(item)}
+                            renderItem={(item) => showData(item)}
                             horizontal
                             showsHorizontalScrollIndicator={false}
                         />
@@ -345,6 +542,17 @@ const VideoPlayer = ({ navigation, route }) => {
 }
 
 export default VideoPlayer
+
+const mixedStyle = {
+    body: {
+        whiteSpace: 'normal',
+        color: '#fff'
+    },
+    p: {
+        color: '#fff',
+        //   fontSize: 13,
+    }
+}
 
 const styles = StyleSheet.create({
 
@@ -368,12 +576,35 @@ const styles = StyleSheet.create({
         width: '100%',
         flex: 1
     },
+    skipAdButton: {
+        position: 'absolute',
+        bottom: 40,
+        right: 1,
+        zIndex: 1,
+        backgroundColor: AppColor.orange1,
+        padding: 7,
+        paddingLeft: 15,
+        borderBottomLeftRadius: 17,
+        borderTopLeftRadius: 17
+    },
     videoStyle: {
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
+    },
+    indicator: {
+        position: 'absolute',
+        top: 115,
+        left: '47%'
+    },
+    activityIndicatorStyle: {
+        height: '100%',
+        position: 'absolute',
+        top: 115,
+        left: '47%',
+        zIndex: 1
     },
     videoFullScreen: {
         position: 'absolute',
@@ -388,7 +619,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     headerBG: {
-        backgroundColor: 'grey',
+        backgroundColor: '#1F222A',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 5
@@ -398,7 +629,7 @@ const styles = StyleSheet.create({
         // width:150,
         height: 155,
         borderRadius: 5,
-        resizeMode:'contain'
+        resizeMode: 'contain'
     },
     heading: {
         color: AppColor.white,
@@ -438,8 +669,8 @@ const styles = StyleSheet.create({
     headingDetails: {
         justifyContent: 'center',
         paddingHorizontal: 10,
-        width: Constants.screenWidth/2.3,
-        
+        width: Constants.screenWidth / 2.3,
+
     },
     title: {
         fontSize: 18,
@@ -490,11 +721,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: 'grey',
+        backgroundColor: '#1F222A',
         paddingHorizontal: 5,
         borderTopColor: AppColor.black,
         borderTopWidth: 3,
-        paddingVertical: 2
+        paddingVertical: 6
     },
     episodeDetails: {
         width: '25%',
@@ -503,7 +734,7 @@ const styles = StyleSheet.create({
     },
     episodeThumbnail: {
         width: '100%',
-        height: 115,
+        height: 135,
         borderRadius: 5
     },
     episodeBox: {

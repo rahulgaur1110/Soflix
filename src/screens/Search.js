@@ -55,7 +55,7 @@ const Search = ({ navigation }) => {
     
           if (response.status == true) {
             setFilteredData(response.data.data.data)
-    console.log('Response:',response.data.data.data)
+    console.log('searchedData:',response.data.data.data)
           }
           else {
     
@@ -118,7 +118,7 @@ const Search = ({ navigation }) => {
                         source={{uri:item?.cover_path}}
                         style={styles.trendThumbnail}
                     />
-                    {/* <Text>{item.id}</Text> */}
+                    <Text style={styles.title}>{item.title}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -167,7 +167,7 @@ const Search = ({ navigation }) => {
                     style={[styles.textInput]}
                     autoCapitalize="none" />
             </View>
-            {filteredData &&
+            {filteredData ? (
             <View style={{marginHorizontal:20}} >
            <Text style={styles.heading}>Search Reasult</Text>
                         <FlatList
@@ -183,10 +183,10 @@ const Search = ({ navigation }) => {
                             showsHorizontalScrollIndicator={false}
                         />
                         </View>
-}
-           {!filteredData &&
+            ):
+           (
            <View style={{marginHorizontal:20}} >
-           <Text style={styles.heading}>Top  Trending</Text>
+           <Text style={styles.heading}>Recently Added</Text>
                         <FlatList
                             keyExtractor={(item) => item.id}
                             data={topMovieData}
@@ -195,7 +195,8 @@ const Search = ({ navigation }) => {
                             showsHorizontalScrollIndicator={false}
                         />
                         </View>
-}
+    )
+           }
             <View style={{height:50}}><Text>Hello</Text></View>
             </ScrollView>
         </ImageBackground>
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
+        // flexDirection: 'row',
     },
     trendThumbnail: {
         width: Constants.screenWidth / 2.5,

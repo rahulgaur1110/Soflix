@@ -66,7 +66,7 @@ const Filter = () => {
 
     return (
         <ImageBackground style={[AppStyle.mainContainer, {justifyContent:'space-between'}]} resizeMode="stretch" source={AppImages.background}
-        imageStyle={{opacity:0.7}}
+        imageStyle={AppStyle.imageContainer}
         >
 <View>
 

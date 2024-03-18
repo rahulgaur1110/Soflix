@@ -37,7 +37,7 @@ useEffect(() => {
 }, []);
 
   return (
-    <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={{opacity:0.7}}>
+    <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={AppStyle.imageContainer}>
     
 
           

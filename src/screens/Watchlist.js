@@ -1,5 +1,5 @@
 import { FlatList, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
 import AppStyle from '../assets/common/AppStyle'
@@ -7,18 +7,53 @@ import AppColor from '../assets/common/AppColors'
 import { LocalData } from '../assets/common/LocalData'
 import Constants from '../assets/common/Constants'
 import Header from '../assets/components/Header'
+import ApiUrl from '../assets/common/lib/ApiUrl'
+import Helper from '../assets/common/lib/Helper'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 
 const Watchlist = ({navigation}) => {
+  const isFocused = useIsFocused()
+
+    const [watchlist, setWatchlist] = useState([]);
+
+
+    const getWatchlist = async () => {
+        Helper.makeRequest({ url: ApiUrl.Watchlist, method: "POST" }).then((response) => {
+                 
+          if (response.status == true) {
+        Helper.banner_path=response.data.banner_path;
+        Helper.video_path=response.data.video_path;
+        Helper.video_cover_path=response.data.video_cover_path;
+        setWatchlist(response.data.data)
+        //   Helper.hideLoader()
+        }
+        else {
+        //   Helper.hideLoader()
+          Helper.showToast(response.message);
+    
+        }
+         
+      }).catch(err => {
+        Helper.hideLoader()
+      })
+      };
+
+
+      useFocusEffect(
+        React.useCallback(() => {
+          getWatchlist();
+        }, [])
+      );
 
     const showData = ({ item, index }) => {
         return (
             <View>
                 
             <TouchableOpacity 
-            // onPress={()=>navigation.navigate('VideoPlayer',{videoId: item.id})}
+            onPress={()=>navigation.navigate('VideoPlayer',{videoId: item?.video?.id})}
             style={styles.catScroller} key={index}>
               <Image
-                source={item.image}
+                source={{ uri: item?.video?.cover_path }}
                 style={styles.trendThumbnail}
               />
               <Text>{item.id}</Text>
@@ -29,19 +64,26 @@ const Watchlist = ({navigation}) => {
 
     return (
         <ImageBackground style={[AppStyle.mainContainer,{paddingBottom:80}]} resizeMode="stretch" source={AppImages.background}
-        imageStyle={{opacity:0.7}}
+        imageStyle={AppStyle.imageContainer}
         >
 
 <Header onPress={() => navigation.goBack()}>Watchlist</Header>
 
 
             <View style={{ marginVertical: 20, alignItems: 'center' }}>
-                <FlatList
+                {/* <FlatList
                 keyExtractor={(item) => item.id}
-                data={LocalData}
+                data={watchlist}
                 renderItem={showData}
                 numColumns={2}
                 showsHorizontalScrollIndicator={false}
+                /> */}
+                 <FlatList
+                    keyExtractor={(item) => item.id}
+                    data={watchlist}
+                    renderItem={showData}
+                    numColumns={2}
+                    // showsHorizontalScrollIndicator={false}
                 />
             </View>
 
@@ -85,16 +127,17 @@ const styles = StyleSheet.create({
         marginHorizontal:20
     },
     catScroller: {
-        marginHorizontal: 8,
+        marginLeft: 0,
         marginBottom:15,
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
+        
     },
     trendThumbnail: {
-        width: Constants.screenWidth/2.6,
+        width: Constants.screenWidth/2.4,
         // width:150,
-       height:185,
-        borderRadius: 5
+       height:200,
+        borderRadius: 5,
+        resizeMode:'contain'
     },
 })

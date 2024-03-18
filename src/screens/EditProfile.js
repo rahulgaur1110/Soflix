@@ -9,7 +9,7 @@ import Header from '../assets/components/Header'
 const EditProfile = ({navigation}) => {
     return (
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
-        imageStyle={{opacity:0.7}}
+        imageStyle={AppStyle.imageContainer}
         >
 
 <Header onPress={() => navigation.goBack()}>Edit Profile</Header>
