@@ -15,7 +15,7 @@ import ApiUrl from '../assets/common/lib/ApiUrl';
 import Config from '../assets/common/lib/Config';
 import Helper from '../assets/common/lib/Helper';
 import { useFocusEffect } from '@react-navigation/native';
-import RenderHTML from 'react-native-render-html';
+// import RenderHTML from 'react-native-render-html';
 import WebView from 'react-native-webview';
 
 
@@ -320,14 +320,14 @@ if (!route.params.isPartner ) {
                 <View style={styles.episodeBox}>
                     <Text style={styles.episodeName}>{item.title}</Text>
 
-                    {item?.description &&
+                    {/* {item?.description &&
 
                         <RenderHTML
                             contentWidth={Constants.screenWidth / 2}
                             source={{ html: item?.description }}
                             tagsStyles={mixedStyle}
                         />
-                    }
+                    } */}
 
 
                 </View>
@@ -479,11 +479,11 @@ if (!route.params.isPartner ) {
                         <View>
                             {/* {videoData?.description || episodeData.description && */}
 
-                                <RenderHTML
+                                {/* <RenderHTML
                                     contentWidth={Constants.screenWidth / 2}
                                     source={{ html:  route.params.isPartner ? episodeData?.description : videoData?.description }}
                                     tagsStyles={mixedStyle}
-                                />
+                                /> */}
                            
                         </View>
 

@@ -34,7 +34,8 @@ const AppStyle = StyleSheet.create({
         fontSize: 14,
         backgroundColor: '#1F222A',
         borderRadius: 10,
-        paddingLeft: 10,
+        paddingHorizontal: 10,
+        paddingVertical:14,
         marginBottom:20
     },
     links: {
