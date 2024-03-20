@@ -22,6 +22,9 @@ const SubCategory = ({ navigation, route }) => {
     const [index, setIndex] = useState(0)
     const [subCategory, setSubCategory] = useState([])
 
+    const [query, setQuery] = useState('');
+    const [filteredChannel,setFilteredChannel] = useState('');
+
     const [categoryId, setCategoryId] = useState(route?.params?.categoryId)
     const [categoryIcon, setCategoryIcon] = useState(route?.params?.categoryIcon)
 
@@ -57,9 +60,8 @@ const SubCategory = ({ navigation, route }) => {
     };
 
     const onPressCategory = (item) => {
-        // console.log('HomeItem:', item);
-        if (item.parent_id === 23) {
-            console.log('category is Partner')
+        if (item.parent_id === 23 || item.parent_id === 31 ) {
+            console.log('category is Partner/TV Channel')
             navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true })
         } else {
             console.log('category is not Partner')
@@ -76,7 +78,7 @@ const SubCategory = ({ navigation, route }) => {
                     onPress={() => onPressCategory(item)}
                     style={styles.catScroller} key={index}>
                    
-                        {item.parent_id === 23 ?
+                        {item.parent_id === 23 || item.parent_id === 31 ?
                          <View style={styles.catBoxImage}>
                             <Image
                             source={{
@@ -97,24 +99,65 @@ const SubCategory = ({ navigation, route }) => {
         );
     };
 
+    const handleSearch = (query) => {
+        const filtered = showSubCategories.filter((item) =>
+            item.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredChannel(filtered);
+        console.log('filteredData:',filteredChannel)
+        console.log('query:',query)
+
+    };
+    const renderEmptyComponent = () => (
+          <Text style={{color:'white'}}>No data found</Text>
+      );
+
+      const backNavigation = () => {
+        navigation.goBack()
+        setFilteredChannel('')
+        setQuery('');
+    }
+
     return (
         <ImageBackground style={[AppStyle.mainContainer, { justifyContent: 'space-between' }]} resizeMode="stretch" source={AppImages.background}
             imageStyle={[AppStyle.imageContainer,]}
         >
             <View style={{ flex: 1 }}>
 
-                <Header onPress={() => navigation.goBack()} />
+                <Header onPress={() => backNavigation()} />
 
 
 
                 <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                     <Text style={styles.heading}>SOFLIX</Text>
-                    {/* {route?.params?.categoryName ? (
-                    <Text style={styles.heading}>{route?.params?.categoryName} - SOFLIX</Text>)
-                    :
-                   ( <Text style={styles.heading}>SOFLIX</Text>)
+                   
+                 {categoryId === 31 &&
+                 <View style={AppStyle.searchBox}>
+                <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
+                <TextInput
+                    placeholder="Search"
+                    placeholderTextColor="#767676"
+                    value={query}
+                    onChangeText={(value) => setQuery(value)}
+                    onSubmitEditing={() => handleSearch(query)}
+                    style={[styles.textInput]}
+                    autoCapitalize="none" />
+            </View>
+            }
 
-                } */}
+{filteredChannel? 
+
+                    <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                        <FlatList
+                            // keyExtractor={(item) => item.id}
+                            data={filteredChannel}
+                            renderItem={showData}
+                            numColumns={2}
+                            showsHorizontalScrollIndicator={false}
+                            ListEmptyComponent={renderEmptyComponent}
+                        />
+                    </View>
+                    :
                     <View style={{ marginBottom: 40, alignItems: 'center' }}>
                         <FlatList
                             // keyExtractor={(item) => item.id}
@@ -124,6 +167,10 @@ const SubCategory = ({ navigation, route }) => {
                             showsHorizontalScrollIndicator={false}
                         />
                     </View>
+}
+{/* {filteredChannel.length = [] &&
+<Text>No data found</Text>
+} */}
                 </View>
 
 
@@ -191,5 +238,13 @@ const styles = StyleSheet.create({
         height: 180,
         borderRadius: 5,
         resizeMode: 'cover'
+    },
+    textInput: {
+        color: 'white',
+        fontSize: 14,
+        backgroundColor: AppColor.black,
+        borderRadius: 5,
+        paddingLeft: 10,
+        paddingVertical: 7
     },
 })

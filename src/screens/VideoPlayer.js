@@ -43,9 +43,9 @@ const VideoPlayer = ({ navigation, route }) => {
     const [visible, setVisible] = useState(false);
     const [skipTime, setSkipTime] = useState();
 
-    console.log('videoData:', videoData)
-    console.log('episodeData:', episodeData)
-    console.log('playlistData:', playlistData)
+    // console.log('videoData:', videoData)
+    // console.log('episodeData:', episodeData)
+    // console.log('playlistData:', playlistData)
 
 
     const playerRef = useRef()
@@ -441,7 +441,7 @@ if (!route.params.isPartner ) {
                     {playlistData.length > 0 &&
                         <View>
                             <View style={styles.headerBG}>
-                                <Text style={styles.title}>Playlist</Text>
+                                <Text style={styles.title}>Shows</Text>
                             </View>
                             <FlatList
                                 data={playlistData}

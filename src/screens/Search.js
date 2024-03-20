@@ -156,7 +156,7 @@ const Search = ({ navigation }) => {
 
             <Header onPress={() => backNavigation()}>Search</Header>
 
-            <View style={styles.searchBox}>
+            <View style={AppStyle.searchBox}>
                 <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
                 <TextInput
                     placeholder="Search"
@@ -167,9 +167,9 @@ const Search = ({ navigation }) => {
                     style={[styles.textInput]}
                     autoCapitalize="none" />
             </View>
-            {filteredData ? (
+            {filteredData.length > 0 ? (
             <View style={{marginHorizontal:20}} >
-           <Text style={styles.heading}>Search Reasult</Text>
+           <Text style={styles.heading}>Search Result</Text>
                         <FlatList
                             keyExtractor={(item) => item.id}
                             // keyExtractor={(item, index) => {
@@ -296,16 +296,7 @@ const styles = StyleSheet.create({
         resizeMode:'contain',
         
     },
-    searchBox: {
-        backgroundColor: AppColor.black,
-        borderRadius: 10,
-        // paddingLeft: 20,
-        padding: 7,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        marginVertical: 20
-    },
+   
     textInput: {
         color: 'white',
         fontSize: 14,

@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import AppColors from './AppColors';
 import Constants from './Constants';
+import AppColor from './AppColors';
 
 const AppStyle = StyleSheet.create({
     mainContainer: {
@@ -15,7 +16,17 @@ const AppStyle = StyleSheet.create({
     imageContainer:{
         opacity: 0.8,
     },
-
+    searchBox: {
+        backgroundColor: AppColor.black,
+        borderRadius: 10,
+        // paddingLeft: 20,
+        padding: 7,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginVertical: 20,
+        width:'90%'
+    },
     container:{
         backgroundColor: AppColors.black,
         flex:1,

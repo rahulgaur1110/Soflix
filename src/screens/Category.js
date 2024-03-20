@@ -20,6 +20,7 @@ const Category = ({ navigation, route }) => {
     const [index, setIndex] = useState(0)
     const [videoData, setVideoData] = useState([])
 
+
     const [categoryId, setCategoryId] = useState(route?.params?.categoryId)
     console.log('categoryId', route?.params?.categoryId)
 
@@ -67,6 +68,13 @@ const Category = ({ navigation, route }) => {
         );
     };
 
+
+    const backNavigation = () => {
+        navigation.goBack()
+        setFilteredChannel('')
+        setQuery('');
+    }
+
     return (
         <ImageBackground style={[AppStyle.mainContainer, { justifyContent: 'space-between' }]} resizeMode="stretch" source={AppImages.background}
         imageStyle={[AppStyle.imageContainer,]}
@@ -85,7 +93,9 @@ const Category = ({ navigation, route }) => {
                    ( <Text style={styles.heading}>SOFLIX</Text>)
 
                 } */}
+               
                         <ScrollView horizontal>
+                           
                             <View style={{ marginBottom: 40, alignItems: 'center' }}>
                                 <FlatList
                                     keyExtractor={(item) => item.id}
@@ -95,6 +105,7 @@ const Category = ({ navigation, route }) => {
                                     showsHorizontalScrollIndicator={false}
                                 />
                             </View>
+
                         </ScrollView>
                     </View>
 
@@ -195,6 +206,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    textInput: {
+        color: 'white',
+        fontSize: 14,
+        backgroundColor: AppColor.black,
+        borderRadius: 5,
+        paddingLeft: 10,
+        paddingVertical: 7
+    },
     trendThumbnail: {
         // width: Constants.screenWidth/2.8,
         width: '100%',
@@ -211,14 +230,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         marginVertical: 20
-    },
-    textInput: {
-        color: 'white',
-        fontSize: 14,
-        backgroundColor: AppColor.black,
-        borderRadius: 5,
-        paddingLeft: 10,
-        paddingVertical: 7
     },
     ImageStyle: {
 
