@@ -4,6 +4,7 @@ import AppImages from '../common/AppImages'
 import AppStyle from '../common/AppStyle'
 import { useNavigation } from '@react-navigation/native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import VectorIcon from "../../screens/VectorIcon";
 
 const Header = ({ onPress, children }) => {
 
@@ -14,7 +15,13 @@ const Header = ({ onPress, children }) => {
 
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={onPress}>
-                    <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
+                        <VectorIcon
+                            size={20}
+                            color={'white'}
+                            iconName={'arrowleft'}
+                            iconSet={'AntDesign'}
+                        />
+                    {/*<AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>*/}
 
                         {/* <Image source={AppImages.Back} style={{ marginBottom: 7 }} /> */}
                     </TouchableOpacity>
