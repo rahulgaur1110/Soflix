@@ -17,6 +17,8 @@ import Helper from '../assets/common/lib/Helper';
 import { useFocusEffect } from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
 import WebView from 'react-native-webview';
+import {CommentSectionModal} from "./Modal/commentSectionModal";
+import ValidateFunction from "../assets/common/ValidateFunction";
 
 
 
@@ -36,6 +38,9 @@ const VideoPlayer = ({ navigation, route }) => {
 
     const [watchlist, setWatchlist] = useState(false);
     const [playingIndex, setPlayingIndex] = useState();
+    const [commentListData, setCommentListData] = useState([]);
+    const [commentText, setCommentText] = useState('');
+    const [commentModalVisible, setCommentModalVisible] = useState(false);
 
     const [showSkipButton, setShowSkipButton] = useState(false);
     const [adIsPlaying, setAdIsPlaying] = useState(true);
@@ -126,14 +131,55 @@ const VideoPlayer = ({ navigation, route }) => {
         })
     };
 
-    
+    const getCommentList = () => {
+        let data = {
+            video_id: videoId,
+            page: 1,
+        };
+        Helper.makeRequest({url: ApiUrl.commentList, method: 'POST', data: data})
+            .then(response => {
+                if (response.status === true) {
+                    setCommentListData(response?.data?.data?.data);
+                } else {
+                    Helper.showToast(response.message);
+                }
+            })
+            .catch(err => {
+                Helper.showToast(err);
+            });
+    };
+
     useEffect(() => {
         if (route?.params?.isPartner) {
             getPlaylist();
         }
+        getCommentList();
         getVideoDetails();
-    }, [])
+    }, []);
 
+    const onPressPostComment = () => {
+        if (commentText?.length > 0) {
+            let data = {
+                video_id: videoId,
+                comment: commentText,
+            };
+            // Helper.showLoader();
+            Helper.makeRequest({
+                url: ApiUrl.addComment,
+                method: 'POST',
+                data: data,
+            })
+                .then(response => {
+                    if (response.status === true) {
+                        getCommentList();
+                        setCommentText('');
+                    }
+                })
+                .catch(err => {
+                    Helper.hideLoader();
+                });
+        }
+    };
 
 if (!route.params.isPartner ) {
     useEffect(() => {
@@ -236,6 +282,14 @@ if (!route.params.isPartner ) {
         Orientation.lockToPortrait();
     }
 
+    const onPressViewAllComments = () => {
+        setCommentModalVisible(true);
+    };
+
+    const closeCommentModal = () => {
+        setCommentModalVisible(false);
+    };
+
     const showData = ({ item, index }) => {
         return (
             <View>
@@ -302,9 +356,34 @@ if (!route.params.isPartner ) {
 
     }
 
+    const commentListRenderItem = ({item}) => {
+        return (
+            <View style={styles.singleCommentView}>
+                <View style={styles.mainImageView}>
+                    {item?.user?.profile_pic ? (
+                        <Image
+                            source={AppImages.DisplayPic}
+                            style={styles.commentUserPic}
+                        />
+                    ) : (
+                        <View style={styles.placeHolderView}>
+                            <Text style={styles.placeHolderText}>
+                                {ValidateFunction?.checkShortName(item?.user?.name || '')}
+                            </Text>
+                        </View>
+                    )}
+                </View>
+                <View>
+                    <Text style={{color: AppColor.white}}>{item?.user?.name}</Text>
+                    <Text style={{color: AppColor.white}}>{item?.comment}</Text>
+                </View>
+            </View>
+        );
+    };
+
     const showEpisodes = ({ item, index }) => {
         return (
-            <TouchableOpacity style={index === playingIndex ? [styles.episodeSection, {opacity:0.6}] : styles.episodeSection} 
+            <TouchableOpacity style={index === playingIndex ? [styles.episodeSection, {opacity:0.6}] : styles.episodeSection}
             onPress={()=>onEpisodePress(item, index)}>
                 <View style={styles.episodeDetails}>
                     <Image
@@ -367,7 +446,7 @@ if (!route.params.isPartner ) {
 
                 {visible ? <ActivityIndicatorElement /> : null}
 
-                
+
 {route.params.isPartner ?
 (<>
                 {episodeData?.advertise_enabled === 1 && adIsPlaying && !videoIsPlaying ? (
@@ -443,7 +522,7 @@ if (!route.params.isPartner ) {
                             <View style={styles.headerBG}>
                             {route?.params?.isChannel ? <Text style={styles.title}> Channels</Text> :
                             <Text style={styles.title}> Shows</Text>}
-                    
+
                             </View>
                             <FlatList
                                 data={playlistData}
@@ -486,8 +565,24 @@ if (!route.params.isPartner ) {
                                     source={{ html:  route.params.isPartner ? episodeData?.description : videoData?.description }}
                                     tagsStyles={mixedStyle}
                                 />
-                            
+
                         </View>
+
+                        <View style={styles.commentListView}>
+                            <Text style={styles.title}>Comments</Text>
+                            <FlatList
+                                data={commentListData.slice(0, 4)}
+                                renderItem={commentListRenderItem}
+                                keyExtractor={(item, index) => index.toString()}
+                            />
+                        </View>
+                        {commentListData?.length > 4 && (
+                            <TouchableOpacity
+                                style={{marginBottom: 18}}
+                                onPress={() => onPressViewAllComments()}>
+                                <Text style={{color: 'white'}}>View all comments</Text>
+                            </TouchableOpacity>
+                        )}
 
 
 
@@ -508,15 +603,19 @@ if (!route.params.isPartner ) {
                             </ScrollView> */}
                             <Text style={styles.title}>Leave a Comment</Text>
                             <TextInput
-                                placeholder='Type a Comment...'
+                                placeholder="Type a Comment..."
                                 placeholderTextColor="#9E9E9E"
-                                style={[AppStyle.textInput, { marginTop: 10, textAlignVertical: 'top' }]}
+                                style={[
+                                    AppStyle.textInput,
+                                    {marginTop: 10},
+                                ]}
                                 autoCapitalize="none"
                                 multiline
-
-
+                                onChangeText={text => setCommentText(text)}
+                                value={commentText}
                             />
-                            <TouchableOpacity style={[styles.watchList, { width: 170, marginBottom: 15 }]}
+                            <TouchableOpacity  onPress={() => onPressPostComment()}
+                                               style={[styles.watchList, { width: 170, marginBottom: 15 }]}
 
                             >
                                 <Text style={{ color: AppColor.white, fontSize: 14 }}>Post Your Comment</Text>
@@ -537,7 +636,14 @@ if (!route.params.isPartner ) {
                 </ScrollView>
             }
 
-
+            {(commentModalVisible && (
+                    <CommentSectionModal
+                        isModalVisible={commentModalVisible}
+                        closeModal={closeCommentModal}
+                        commentListData={commentListData}
+                    />
+                )) ||
+                null}
 
         </ImageBackground>
     )
@@ -749,6 +855,38 @@ const styles = StyleSheet.create({
         color: AppColor.white,
         fontWeight: 'bold',
 
+    },
+    singleCommentView: {
+        flexDirection: 'row',
+        marginTop: 10,
+        alignItems: 'center',
+    },
+    mainImageView: {
+        borderRadius: 36,
+        width: 36,
+        height: 36,
+        display: 'flex',
+        backgroundColor: '#1F222A',
+        marginRight: 10,
+        marginBottom: 8,
+    },
+    commentUserPic: {
+        width: 36,
+        height: 36,
+    },
+    placeHolderView: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    placeHolderText: {
+        fontSize: 12,
+        color: AppColor.white,
+        fontWeight: '500',
     },
 
 })
