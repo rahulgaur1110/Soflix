@@ -131,11 +131,12 @@ const EditProfile = ({navigation}) => {
                 placeholder="Email"
                 value={email}
                 placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
+                style={[AppStyle.textInput, {color:'grey'}]}
                 autoCapitalize="none"
                 maxLength={30}
                 blurOnSubmit={false}
-                onChangeText={(value)=>setemail(value)}
+                // onChangeText={(value)=>setemail(value)}
+                editable={false}
             />
             <TextInput
                 placeholder="Mobile"
