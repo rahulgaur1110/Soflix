@@ -15,7 +15,9 @@ const ApiUrl = {
     Categorylist: "/category-list",
     ThemeList: "/video-themes-list",
     LanguageList: "/language-list",
-    VideoWatchTimeSet: "/video-watch-time-set"
+    VideoWatchTimeSet: "/video-watch-time-set",
+    addComment: '/add-comments',
+    commentList: '/comments-list',
    }
-   
+
    export default ApiUrl;

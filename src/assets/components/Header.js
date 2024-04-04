@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Helper from '../common/lib/Helper'
 import Config from '../common/lib/Config'
+import VectorIcon from "../../screens/VectorIcon";
 
 const Header = ({ onPress, children }) => {
 
@@ -16,9 +17,9 @@ const Header = ({ onPress, children }) => {
     useEffect(() => {
         const focusListener = navigation.addListener('focus', () => {
             Helper.getData('userdata').then((res) => {
-                
+
                 setProfileImage(Config.ImageUrl + res.profile_pic);
-        
+
           })
           console.log("focus success")
         });
@@ -34,7 +35,12 @@ const Header = ({ onPress, children }) => {
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={onPress}>
                     <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
-
+                        <VectorIcon
+                            size={20}
+                            color={'white'}
+                            iconName={'arrowleft'}
+                            iconSet={'AntDesign'}
+                        />
                         {/* <Image source={AppImages.Back} style={{ marginBottom: 7 }} /> */}
                     </TouchableOpacity>
                     <Text style={[AppStyle.subHeading, { paddingLeft: 10 }]}>{children}</Text>

@@ -41,11 +41,43 @@
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortrait</  string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+  <key>UIAppFonts</key>
+    <array>
+      <string>Viga-Regular.ttf</string>
+      <string>FontAwesome5_Brands.ttf</string>
+      <string>Rubik-Medium.ttf</string>
+      <string>Rubik-Light.ttf</string>
+      <string>Rubik-Regular.ttf</string>
+      <string>Inter-Light.ttf</string>
+      <string>Inter-Medium.ttf</string>
+      <string>Inter-Regular.ttf</string>
+      <string>PingFang-Regular.ttf</string>
+      <string>Roboto-Light.ttf</string>
+      <string>Roboto-Medium.ttf</string>
+      <string>Roboto-Regular.ttf</string>
+      <string>Inter-Bold.ttf</string>
+      <string>Inter-SemiBold.ttf</string>
+      <string>Manrope-Bold.ttf</string>
+      <string>Manrope-ExtraBold.ttf</string>
+      <string>Manrope-Medium.ttf</string>
+      <string>Manrope-Regular.ttf</string>
+      <string>Manrope-SemiBold.ttf</string>
+      <string>MaterialIcons.ttf</string>
+      <string>MaterialCommunityIcons.ttf</string>
+      <string>Octicons.ttf</string>
+      <string>Feather.ttf</string>
+      <string>Entypo.ttf</string>
+      <string>FontAwesome.ttf</string>
+      <string>Anticon.ttf</string>
+      <string>AntDesign.ttf</string>
+      <string>FontAwesome5_Solid.ttf</string>
+      <string>Fontisto.ttf</string>
+    </array>
 </dict>
 </plist>

@@ -14,7 +14,7 @@ const VALIDATE = {
 
 const validationFunctions = {
 
-    
+
 
     checkAlphabet: (name, min, max, value) => {
         var min = min || 5;
@@ -83,7 +83,7 @@ const validationFunctions = {
         var min = min || 7;
         var max = max || 15;
         if (value) {
-            if (!VALIDATE.PASSWORD.test(value)) { Toast.show(`${name} is invalid, must contain at least one lowercase letter, one uppercase letter, and one digit.`); 
+            if (!VALIDATE.PASSWORD.test(value)) { Toast.show(`${name} is invalid, must contain at least one lowercase letter, one uppercase letter, and one digit.`);
             return false }
             else if (value.length < min || value.length > max) { Toast.show(`${name} must be between ${min} to ${max} digits.`); return false }
             return true
@@ -112,6 +112,13 @@ const validationFunctions = {
             return true
         }
         else { Toast.show(`${name} is required.`); return false }
+    },
+
+    checkShortName: name => {
+        const arr = name?.split(' ');
+        return `${(arr?.length > 0 && arr[0]?.charAt(0).toUpperCase()) || ''}${
+            (arr?.length > 1 && arr[1]?.charAt(0).toUpperCase()) || ''
+        }`;
     },
 
 }
