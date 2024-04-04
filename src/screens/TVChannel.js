@@ -19,27 +19,33 @@ const TVChannel = ({ navigation, route }) => {
     const isCarousel = useRef(null);
     const [index, setIndex] = useState(0)
     const [videoData, setVideoData] = useState([])
+    const [channel, setChannel] = useState([])
 
-    const [categoryId, setCategoryId] = useState(route?.params?.categoryId)
-    console.log('categoryId', route?.params?.categoryId)
+    const [query, setQuery] = useState('');
+    const [filteredChannel, setFilteredChannel] = useState('');
+
+
+    const selectedCategory = videoData.find((item) => item.id === 31)
+    const showChannels = selectedCategory?.active_sub_category
+
+    console.log('showChannels:', showChannels)
 
     useEffect(() => {
-        if(isFocused){
-        getCategoryMovies();
+        if (isFocused) {
+            getCategoryMovies();
         }
     }, [])
 
+
     const getCategoryMovies = async () => {
 
-        let data = {
-            "category_id": route?.params?.categoryId
-        }
-        Helper.makeRequest({ url: ApiUrl.VideoList, method: "POST", data: data }).then((response) => {
+        Helper.makeRequest({ url: ApiUrl.Categorylist, method: "POST", }).then((response) => {
 
             if (response.status == true) {
-                setVideoData(response.data.data.data)
+                setVideoData(response.data.data)
             }
             else {
+
                 Helper.showToast(response.message);
 
             }
@@ -53,48 +59,87 @@ const TVChannel = ({ navigation, route }) => {
             <View>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('VideoPlayer', { videoId: item.id })}
+                    onPress={() => navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner:true, isChannel: true })}
                     style={styles.catScroller} >
                     <Image
                         source={{
-                            uri: item.cover_path
+                            uri: item.image_path
                         }}
                         style={styles.trendThumbnail}
                     />
-                    <Text style={styles.catDetails}>{item.title}</Text>
+                    <Text style={styles.catDetails}>{item.name}</Text>
                 </TouchableOpacity>
             </View>
         );
     };
+
+    const handleSearch = (query) => {
+        const filtered = showChannels.filter((item) =>
+            item.name.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredChannel(filtered);
+        console.log('filteredData:', filteredChannel)
+        console.log('query:', query)
+
+    };
+    const renderEmptyComponent = () => (
+        <Text style={{ color: 'white' }}>No data found</Text>
+    );
+
+    const backNavigation = () => {
+        navigation.goBack()
+        setFilteredChannel('')
+        setQuery('');
+    }
 
     return (
         <ImageBackground style={[AppStyle.mainContainer, { justifyContent: 'space-between' }]} resizeMode="stretch" source={AppImages.background}
             imageStyle={{ opacity: 0.7 }}
         >
             <ScrollView>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 0.2 }}>
 
                     <Header onPress={() => navigation.goBack()} />
 
 
 
-                    <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                        {/* {route?.params?.categoryName ? (
-                    <Text style={styles.heading}>{route?.params?.categoryName} - SOFLIX</Text>)
-                    :
-                   ( <Text style={styles.heading}>SOFLIX</Text>)
-
-                } */}
+                    <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1.8 }}>
+                        <View style={AppStyle.searchBox}>
+                            <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
+                            <TextInput
+                                placeholder="Search"
+                                placeholderTextColor="#767676"
+                                value={query}
+                                onChangeText={(value) => setQuery(value)}
+                                onSubmitEditing={() => handleSearch(query)}
+                                style={[styles.textInput]}
+                                autoCapitalize="none" />
+                        </View>
                         <ScrollView horizontal>
-                            <View style={{ marginBottom: 40, alignItems: 'center' }}>
-                                <FlatList
-                                    keyExtractor={(item) => item.id}
-                                    data={videoData}
-                                    renderItem={showData}
-                                    numColumns={2}
-                                    showsHorizontalScrollIndicator={false}
-                                />
-                            </View>
+
+                            {filteredChannel ?
+
+                                <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                                    <FlatList
+                                        // keyExtractor={(item) => item.id}
+                                        data={filteredChannel}
+                                        renderItem={showData}
+                                        numColumns={2}
+                                        showsHorizontalScrollIndicator={false}
+                                        ListEmptyComponent={renderEmptyComponent}
+                                    />
+                                </View>
+                                :
+                                <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                                    <FlatList
+                                        // keyExtractor={(item) => item.id}
+                                        data={showChannels}
+                                        renderItem={showData}
+                                        numColumns={2}
+                                        showsHorizontalScrollIndicator={false}
+                                    />
+                                </View>
+                            }
                         </ScrollView>
                     </View>
 
@@ -189,8 +234,9 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     catScroller: {
-        width: 160,
-        marginHorizontal: 10,
+        
+        width: 130,
+        marginRight: 10,
         marginBottom: 25,
         justifyContent: 'center',
         alignItems: 'center',

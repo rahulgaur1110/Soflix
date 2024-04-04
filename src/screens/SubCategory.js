@@ -60,9 +60,12 @@ const SubCategory = ({ navigation, route }) => {
     };
 
     const onPressCategory = (item) => {
-        if (item.parent_id === 23 || item.parent_id === 31 ) {
-            console.log('category is Partner/TV Channel')
+        if (item.parent_id === 23 ) {
+            console.log('category is Partner')
             navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true })
+        } else if ( item.parent_id === 31 ) {
+            console.log('category is TV Channel')
+            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true,isChannel:true })
         } else {
             console.log('category is not Partner')
             navigation.navigate('Category', { categoryId: item.id })
@@ -70,7 +73,6 @@ const SubCategory = ({ navigation, route }) => {
     }
 
     const showData = ({ item, index }) => {
-        console.log('item:', item)
         return (
             <View>
                 <TouchableOpacity
@@ -129,7 +131,6 @@ const SubCategory = ({ navigation, route }) => {
 
 
                 <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={styles.heading}>SOFLIX</Text>
                    
                  {categoryId === 31 &&
                  <View style={AppStyle.searchBox}>
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
         color: AppColor.white,
         fontSize: 25,
         alignSelf: 'center',
-        marginBottom: 20,
+        // marginBottom: 20,
         fontWeight: 'bold',
     },
 

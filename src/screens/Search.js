@@ -107,6 +107,10 @@ const Search = ({ navigation }) => {
         setQuery('');
     }
 
+    const renderEmptyComponent = () => (
+        <Text style={{color:'white'}}>No data found</Text>
+    );
+
     const showData = ({ item, index }) => {
         return (
             <View>
@@ -167,7 +171,7 @@ const Search = ({ navigation }) => {
                     style={[styles.textInput]}
                     autoCapitalize="none" />
             </View>
-            {filteredData.length > 0 ? (
+            {query ? (
             <View style={{marginHorizontal:20}} >
            <Text style={styles.heading}>Search Result</Text>
                         <FlatList
@@ -181,6 +185,7 @@ const Search = ({ navigation }) => {
                             renderItem={(item)=>showData(item)}
                             numColumns={2}
                             showsHorizontalScrollIndicator={false}
+                            ListEmptyComponent={renderEmptyComponent}
                         />
                         </View>
             ):
@@ -282,6 +287,7 @@ const styles = StyleSheet.create({
         lineHeight: 28,
     },
     catScroller: {
+        width:Constants.screenWidth/2.5,
         marginRight: 10,
         marginBottom: 20,
         justifyContent: 'center',

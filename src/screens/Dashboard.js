@@ -25,6 +25,23 @@ const Dashboard = ({ navigation }) => {
     const [kidShowData, setKidShowData] = useState([])
     const [popularData, setPopularData] = useState([])
     const [loading, setLoading] = useState(true);
+    const [profileImage, setProfileImage] = useState('');
+
+
+    useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
+            Helper.getData('userdata').then((res) => {
+                
+                setProfileImage(Config.ImageUrl + res.profile_pic);
+        
+          })
+          console.log("focus success")
+        });
+        return () => {
+          // clean up event listener
+          focusListener.remove();
+        };
+      }, []);
 
     const getBannerData = async () => {
         // Helper.showLoader();
@@ -291,7 +308,7 @@ const Dashboard = ({ navigation }) => {
                 <Image style={[styles.logo,]} source={AppImages.logo} />
 
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Image source={AppImages.DisplayPic} style={AppStyle.displayPic} />
+                    <Image source={{uri: profileImage}} style={AppStyle.displayPic} />
                 </TouchableOpacity>
             </View>
             { bannerData.length<0 ?

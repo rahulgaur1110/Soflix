@@ -15,7 +15,7 @@ import ApiUrl from '../assets/common/lib/ApiUrl';
 import Config from '../assets/common/lib/Config';
 import Helper from '../assets/common/lib/Helper';
 import { useFocusEffect } from '@react-navigation/native';
-// import RenderHTML from 'react-native-render-html';
+import RenderHTML from 'react-native-render-html';
 import WebView from 'react-native-webview';
 
 
@@ -43,8 +43,8 @@ const VideoPlayer = ({ navigation, route }) => {
     const [visible, setVisible] = useState(false);
     const [skipTime, setSkipTime] = useState();
 
+    console.log('params:', route.params)
     // console.log('videoData:', videoData)
-    // console.log('episodeData:', episodeData)
     // console.log('playlistData:', playlistData)
 
 
@@ -320,14 +320,14 @@ if (!route.params.isPartner ) {
                 <View style={styles.episodeBox}>
                     <Text style={styles.episodeName}>{item.title}</Text>
 
-                    {/* {item?.description &&
+                    {item?.description &&
 
                         <RenderHTML
                             contentWidth={Constants.screenWidth / 2}
                             source={{ html: item?.description }}
                             tagsStyles={mixedStyle}
                         />
-                    } */}
+                    }
 
 
                 </View>
@@ -441,7 +441,9 @@ if (!route.params.isPartner ) {
                     {playlistData.length > 0 &&
                         <View>
                             <View style={styles.headerBG}>
-                                <Text style={styles.title}>Shows</Text>
+                            {route?.params?.isChannel ? <Text style={styles.title}> Channels</Text> :
+                            <Text style={styles.title}> Shows</Text>}
+                    
                             </View>
                             <FlatList
                                 data={playlistData}
@@ -477,14 +479,14 @@ if (!route.params.isPartner ) {
 }
                         </View>
                         <View>
-                            {/* {videoData?.description || episodeData.description && */}
+                            {/* {videoData?.description || episodeData.description &&  */}
 
-                                {/* <RenderHTML
+                                <RenderHTML
                                     contentWidth={Constants.screenWidth / 2}
                                     source={{ html:  route.params.isPartner ? episodeData?.description : videoData?.description }}
                                     tagsStyles={mixedStyle}
-                                /> */}
-                           
+                                />
+                            
                         </View>
 
 

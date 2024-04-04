@@ -1,13 +1,32 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { Children } from 'react'
+import React, { Children, useEffect, useState } from 'react'
 import AppImages from '../common/AppImages'
 import AppStyle from '../common/AppStyle'
 import { useNavigation } from '@react-navigation/native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Helper from '../common/lib/Helper'
+import Config from '../common/lib/Config'
 
 const Header = ({ onPress, children }) => {
 
     const navigation = useNavigation();
+    const [profileImage, setProfileImage] = useState('');
+
+
+    useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
+            Helper.getData('userdata').then((res) => {
+                
+                setProfileImage(Config.ImageUrl + res.profile_pic);
+        
+          })
+          console.log("focus success")
+        });
+        return () => {
+          // clean up event listener
+          focusListener.remove();
+        };
+      }, []);
 
   return (
     <View style={styles.header}>
@@ -21,7 +40,7 @@ const Header = ({ onPress, children }) => {
                     <Text style={[AppStyle.subHeading, { paddingLeft: 10 }]}>{children}</Text>
                 </View>
                 <TouchableOpacity onPress={()=> navigation.navigate('Profile')}>
-                <Image source={AppImages.DisplayPic} style={AppStyle.displayPic} />
+                <Image source={{uri:profileImage}} style={AppStyle.displayPic} />
                 </TouchableOpacity>
             </View>
   )
