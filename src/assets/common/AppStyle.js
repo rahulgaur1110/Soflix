@@ -59,7 +59,8 @@ const AppStyle = StyleSheet.create({
     },
     displayPic:{
         width:46,
-        height:46
+        height:46,
+        borderRadius:25
     },
     heading: { 
         color: AppColors.white,  fontSize: 24 ,

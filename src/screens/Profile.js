@@ -1,11 +1,30 @@
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
 import AppStyle from '../assets/common/AppStyle'
 import AppColor from '../assets/common/AppColors'
+import Helper from '../assets/common/lib/Helper'
+import Config from '../assets/common/lib/Config'
 
 const Profile = ({navigation}) => {
+    const [profileImage, setProfileImage] = useState('');
+
+    useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
+            Helper.getData('userdata').then((res) => {
+                
+                setProfileImage(Config.ImageUrl + res.profile_pic);
+        
+          })
+          console.log("focus success")
+        });
+        return () => {
+          // clean up event listener
+          focusListener.remove();
+        };
+      }, []);
+
     return (
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
         imageStyle={AppStyle.imageContainer}
@@ -25,7 +44,7 @@ const Profile = ({navigation}) => {
 
             <View style={{alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
                    
-                                <Image style={{ width: 100, height: 100, borderRadius: 100/2 }} source={AppImages.DisplayPic} />
+                                <Image style={{ width: 100, height: 100, borderRadius: 100/2 }} source={{uri: profileImage}} />
                             
                     <TouchableOpacity style={styles.editButton} onPress={()=>navigation.navigate('EditProfile')}>
                         <Image source={AppImages.Edit} />
