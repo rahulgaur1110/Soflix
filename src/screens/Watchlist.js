@@ -19,7 +19,7 @@ const Watchlist = ({navigation}) => {
 
     const getWatchlist = async () => {
         Helper.makeRequest({ url: ApiUrl.Watchlist, method: "POST" }).then((response) => {
-                 
+
           if (response.status == true) {
         Helper.banner_path=response.data.banner_path;
         Helper.video_path=response.data.video_path;
@@ -30,9 +30,9 @@ const Watchlist = ({navigation}) => {
         else {
         //   Helper.hideLoader()
           Helper.showToast(response.message);
-    
+
         }
-         
+
       }).catch(err => {
         Helper.hideLoader()
       })
@@ -46,10 +46,13 @@ const Watchlist = ({navigation}) => {
       );
 
     const showData = ({ item, index }) => {
+        if (item === undefined || item === null || item.video === undefined || item.video === null) {
+            return null;
+        }
         return (
             <View>
-                
-            <TouchableOpacity 
+
+            <TouchableOpacity
             onPress={()=>navigation.navigate('VideoPlayer',{videoId: item?.video?.id})}
             style={styles.catScroller} key={index}>
               <Image
@@ -80,15 +83,15 @@ const Watchlist = ({navigation}) => {
                 /> */}
                  <FlatList
                     keyExtractor={(item) => item.id}
-                    data={watchlist}
+                    data={[...watchlist].reverse()}
                     renderItem={showData}
                     numColumns={2}
                     // showsHorizontalScrollIndicator={false}
                 />
             </View>
 
-            
-            
+
+
 
         </ImageBackground>
     )
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
     },
-  
+
     editButton: {
         backgroundColor: AppColor.orange1,
         borderRadius:20,
@@ -117,7 +120,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 15,
-        
+
     },
     options: {
         color: '#E0F1FF',
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
         marginBottom:15,
         justifyContent: 'center',
         alignItems: 'center',
-        
+
     },
     trendThumbnail: {
         width: Constants.screenWidth/2.4,

@@ -578,7 +578,7 @@ if (!route.params.isPartner ) {
                         </View>
                         {commentListData?.length > 4 && (
                             <TouchableOpacity
-                                style={{marginBottom: 18}}
+                                style={{marginBottom: 5 ,marginTop : 5}}
                                 onPress={() => onPressViewAllComments()}>
                                 <Text style={{color: 'white'}}>View all comments</Text>
                             </TouchableOpacity>
