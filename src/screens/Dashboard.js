@@ -12,6 +12,7 @@ import Helper from '../assets/common/lib/Helper';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import Config from '../assets/common/lib/Config';
 import { useFocusEffect } from '@react-navigation/native';
+import VectorIcon from "./VectorIcon";
 
 const Dashboard = ({ navigation }) => {
 
@@ -31,9 +32,9 @@ const Dashboard = ({ navigation }) => {
     useEffect(() => {
         const focusListener = navigation.addListener('focus', () => {
             Helper.getData('userdata').then((res) => {
-                
+
                 setProfileImage(Config.ImageUrl + res.profile_pic);
-        
+
           })
           console.log("focus success")
         });
@@ -60,7 +61,7 @@ const Dashboard = ({ navigation }) => {
                 Helper.showToast(response.message);
 
             }
-            // getTopMovies();  
+            // getTopMovies();
         }).catch(err => {
             // Helper.hideLoader()
             console.log(err)
@@ -287,7 +288,13 @@ const Dashboard = ({ navigation }) => {
                 >
 
                     <View style={styles.catBox}>
-                        <Icon name={item.icon} size={30} color={'grey'} />
+                        <VectorIcon
+                            size={18}
+                            color={'grey'}
+                            iconName={item.icon}
+                            iconSet={'FontAwesome5'}
+                        />
+                        {/*<Icon name={item.icon} size={30} color={'grey'} />*/}
                     </View>
                     <View style={{ alignSelf: 'center' }}>
                         <Text style={[AppStyle.text, { alignSelf: 'center' }]}>{item.name}</Text>
@@ -313,7 +320,7 @@ const Dashboard = ({ navigation }) => {
             </View>
             { bannerData.length<0 ?
             <ActivityIndicator size="large" style={styles.indicator} /> :
-   
+
       <>
             <View style={{ flex: 2.5, }}>
                 <Carousel
@@ -363,7 +370,7 @@ const Dashboard = ({ navigation }) => {
                     showsHorizontalScrollIndicator={false}
                 />
             </View>
-            
+
 
            <View style={{ flex: 2, alignItems: 'flex-start', marginTop: 20 }}>
               { trendingData.length > 0 ? (<Text style={styles.heading}>Recently Added</Text>): null}
@@ -377,7 +384,7 @@ const Dashboard = ({ navigation }) => {
             </View>
 
             <View style={{ flex: 2, alignItems: 'flex-start', marginTop: 20 }}>
-            { popularData.length > 0 ? (<Text style={styles.heading}>Most Watched</Text>): 
+            { popularData.length > 0 ? (<Text style={styles.heading}>Most Watched</Text>):
            null}
 
                 <FlatList
@@ -415,7 +422,7 @@ const Dashboard = ({ navigation }) => {
             </>}
             <View style={{ height: 60, flex: .5 }} />
             </ScrollView>
-           
+
         </ImageBackground>
 
     )

@@ -1,5 +1,14 @@
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import {
+    Image,
+    ImageBackground,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+    TouchableWithoutFeedback,
+    Keyboard,
+} from 'react-native';import React, { useEffect, useState } from 'react'
 import Toast from 'react-native-root-toast'
 import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
@@ -59,11 +68,14 @@ const Login = ({ navigation }) => {
 
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={AppStyle.imageContainer}>
 
 
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
 
             <Image style={[AppStyle.logo, { marginVertical: 30 }]} source={AppImages.logo} />
+        </TouchableWithoutFeedback>
             <TextInput
                 placeholder="Email"
                 value={email}
@@ -110,6 +122,7 @@ const Login = ({ navigation }) => {
                 </View>
             </View>
         </ImageBackground>
+        </TouchableWithoutFeedback>
     )
 }
 
