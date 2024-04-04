@@ -34,13 +34,14 @@ const Header = ({ onPress, children }) => {
 
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={onPress}>
-                    <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
                         <VectorIcon
                             size={20}
                             color={'white'}
                             iconName={'arrowleft'}
                             iconSet={'AntDesign'}
                         />
+                    {/*<AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>*/}
+
                         {/* <Image source={AppImages.Back} style={{ marginBottom: 7 }} /> */}
                     </TouchableOpacity>
                     <Text style={[AppStyle.subHeading, { paddingLeft: 10 }]}>{children}</Text>
