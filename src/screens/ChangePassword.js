@@ -8,11 +8,15 @@ import Header from '../assets/components/Header'
 import validationFunctions from '../assets/common/ValidateFunction'
 import ApiUrl from '../assets/common/lib/ApiUrl'
 import Helper from '../assets/common/lib/Helper'
+import VectorIcon from "./VectorIcon";
 
 const ChangePassword = ({navigation}) => {
     const [oldPassword, setOldpassword] = useState('');
     const [newPassword, setNewpassword] = useState('');
     const [confirmPassword, setconfirmPassword] = useState('');
+    const [oldPasswordSecure, setOldPasswordSecure] = useState(true);
+    const [newPasswordSecure, setNewPasswordSecure] = useState(true);
+    const [confirmPasswordSecure, setConfirmPasswordSecure] = useState(true);
 
     const SubmitChanges = async () => {
 
@@ -56,43 +60,98 @@ const ChangePassword = ({navigation}) => {
 
 <Header onPress={() => navigation.goBack()}>Change Password</Header>
 
-          
+
 
             <View style={{ marginVertical: 30, alignItems: 'center' }}>
             </View>
 
-            <TextInput
-                placeholder="Old Password"
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                maxLength={30}
-                blurOnSubmit={false}
-                secureTextEntry
-                onChangeText={(value) => setOldpassword(value)}
-            />
-            <TextInput
-                placeholder="New Password"
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                maxLength={30}
-                blurOnSubmit={false}
-                secureTextEntry
-                onChangeText={(value) => setNewpassword(value)}
-
-            />
-            <TextInput
-                placeholder="Confirm Password"
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                maxLength={30}
-                blurOnSubmit={false}
-                secureTextEntry
-                onChangeText={(value) => setconfirmPassword(value)}
-
-            />
+            <View style={styles.textInputBox}>
+                <TextInput
+                    placeholder="Old Password"
+                    placeholderTextColor="#9E9E9E"
+                    autoCapitalize="none"
+                    style={styles.textInputStyle}
+                    maxLength={30}
+                    blurOnSubmit={false}
+                    secureTextEntry={oldPasswordSecure}
+                    onChangeText={(value) => setOldpassword(value)}
+                />
+                <TouchableOpacity onPress={() => setOldPasswordSecure(!oldPasswordSecure)}>
+                    {oldPasswordSecure ?
+                        <VectorIcon
+                          size={18}
+                          color={'grey'}
+                          iconName={'eye'}
+                          iconSet={'Entypo'}
+                        />
+                        :
+                        <VectorIcon
+                          size={18}
+                          color={'grey'}
+                          iconName={'eye-with-line'}
+                          iconSet={'Entypo'}
+                        />
+                    }
+                </TouchableOpacity>
+            </View>
+            <View style={styles.textInputBox}>
+                <TextInput
+                    placeholder="New Password"
+                    placeholderTextColor="#9E9E9E"
+                    autoCapitalize="none"
+                    style={styles.textInputStyle}
+                    maxLength={30}
+                    blurOnSubmit={false}
+                    secureTextEntry={newPasswordSecure}
+                    onChangeText={(value) => setNewpassword(value)}
+                />
+                <TouchableOpacity onPress={() => setNewPasswordSecure(!newPasswordSecure)}>
+                    {newPasswordSecure ?
+                        <VectorIcon
+                            size={18}
+                            color={'grey'}
+                            iconName={'eye'}
+                            iconSet={'Entypo'}
+                        />
+                        :
+                        <VectorIcon
+                            size={18}
+                            color={'grey'}
+                            iconName={'eye-with-line'}
+                            iconSet={'Entypo'}
+                        />
+                    }
+                </TouchableOpacity>
+            </View>
+            <View style={styles.textInputBox}>
+                <TextInput
+                    placeholder="Confirm Password"
+                    placeholderTextColor="#9E9E9E"
+                    autoCapitalize="none"
+                    style={styles.textInputStyle}
+                    maxLength={30}
+                    blurOnSubmit={false}
+                    secureTextEntry={confirmPasswordSecure}
+                    onChangeText={(value) => setconfirmPassword(value)}
+                />
+                <TouchableOpacity onPress={() => setConfirmPasswordSecure(!confirmPasswordSecure)}>
+                    {confirmPasswordSecure ?
+                        <VectorIcon
+                            size={18}
+                            color={'grey'}
+                            iconName={'eye'}
+                            iconSet={'Entypo'}
+                        />
+                        :
+                        <VectorIcon
+                            size={18}
+                            color={'grey'}
+                            iconName={'eye-with-line'}
+                            iconSet={'Entypo'}
+                        />
+                    }
+                </TouchableOpacity>
+            </View>
 
             <View style={{ paddingTop: 30 }}>
                 <MainButton onPress={SubmitChanges}>Submit</MainButton>
@@ -115,5 +174,19 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
     },
-   
+    textInputBox: {
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        backgroundColor:'#1F222A',
+        borderRadius: 10,
+        marginBottom:20,
+        paddingHorizontal: 10,
+        paddingVertical:14
+    },
+    textInputStyle:{
+        color: 'white',
+        fontSize: 14,
+        flex:1
+    }
 })

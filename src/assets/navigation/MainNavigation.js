@@ -29,7 +29,7 @@ const AuthStackScreen = () => (
   <AuthStack.Navigator initialRouteName={"Splash"}>
     <AuthStack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
     <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-    <AuthStack.Screen name="SignUp" component={Register} options={{ headerShown: false }} />    
+    <AuthStack.Screen name="SignUp" component={Register} options={{ headerShown: false }} />
     <AuthStack.Screen name="StaticPage" component={StaticPage} options={{ headerShown: false }} />
     <AuthStack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }} />
   </AuthStack.Navigator>
@@ -39,7 +39,7 @@ const HomeStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator >
-    
+
       <HomeStack.Screen name="Dashboard" component={Dashboard}
         options={{ headerShown: false }} />
       {/* <HomeStack.Screen name="VideoPlayer" component={VideoPlayer}
@@ -56,10 +56,10 @@ function HomeStackScreen() {
 const MainStack = createNativeStackNavigator();
 function MainNavigator() {
   return (
-    <MainStack.Navigator 
+    <MainStack.Navigator
     // initialRouteName={"Splash"}
     >
-     
+
     <MainStack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
     <MainStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
 <MainStack.Screen name="Register" component={Register} options={{ headerShown: false }} />
@@ -89,8 +89,7 @@ function TabNavigator() {
           borderTopWidth: 0,
           marginHorizontal:20,
           borderRadius:40,
-          alignItems: 'center', 
-          
+          alignItems: 'center',
         },
       }}
     >
@@ -101,9 +100,9 @@ function TabNavigator() {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View style={styles.bottomBox}>
- 
+
               <MaterialIcons name="home-filled" color={AppColor.orange1} size={24}
-              style={[styles.footer_Icon, 
+              style={[styles.footer_Icon,
                 {color: focused ? AppColor.orange1 : AppColor.black,
                 backgroundColor: focused ? AppColor.white: AppColor.orange1,
               }]}
@@ -124,7 +123,7 @@ function TabNavigator() {
           tabBarIcon: ({ focused }) => (
             <View style={styles.bottomBox}>
               <MaterialIcons name="search" color={AppColor.orange1} size={24}
-             style={[styles.footer_Icon, 
+             style={[styles.footer_Icon,
               {color: focused ? AppColor.orange1 : AppColor.black,
               backgroundColor: focused ? AppColor.white: AppColor.orange1,
             }]}
@@ -142,9 +141,9 @@ function TabNavigator() {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View style={styles.bottomBox}>
-              
+
                <MaterialIcons name="playlist-play" color={AppColor.orange1} size={24}
-             style={[styles.footer_Icon, 
+             style={[styles.footer_Icon,
               {color: focused ? AppColor.orange1 : AppColor.black,
               backgroundColor: focused ? AppColor.white: AppColor.orange1,
             }]}
@@ -164,7 +163,7 @@ function TabNavigator() {
           tabBarIcon: ({ focused }) => (
             <View style={styles.bottomBox}>
               <Entypo name="tv" color={AppColor.orange1} size={23}
-             style={[styles.footer_Icon, 
+             style={[styles.footer_Icon,
               {color: focused ? AppColor.orange1 : AppColor.black,
               backgroundColor: focused ? AppColor.white: AppColor.orange1,
             }]}
@@ -181,15 +180,16 @@ function TabNavigator() {
 
 const styles = StyleSheet.create({
   footer_Icon: {
-    
+
     borderRadius: 32,padding:5,
-   
+    paddingTop: 2.5,
+
   },
 
   bottomBox: {
     justifyContent: 'center', alignItems: 'center',
     width:40,
-    
+    marginTop: 12,
   }
 });
 

@@ -1,4 +1,19 @@
-import { ActivityIndicator, FlatList, Image, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    ImageBackground,
+    KeyboardAvoidingView, Platform,
+    SafeAreaView,
+    Keyboard,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Video from 'react-native-video'
 import Orientation from 'react-native-orientation-locker';
@@ -23,6 +38,9 @@ import ValidateFunction from "../assets/common/ValidateFunction";
 
 
 const VideoPlayer = ({ navigation, route }) => {
+
+    const scrollRef = useRef(null);
+
     const [height, setHeight] = useState();
     const [videoId, setVideoId] = useState(route.params.videoId);
     const [playlistId, setPlaylistId] = useState(route.params.playlistId);
@@ -398,20 +416,14 @@ if (!route.params.isPartner ) {
                 </View>
                 <View style={styles.episodeBox}>
                     <Text style={styles.episodeName}>{item.title}</Text>
-
                     {item?.description &&
-
                         <RenderHTML
                             contentWidth={Constants.screenWidth / 2}
                             source={{ html: item?.description }}
                             tagsStyles={mixedStyle}
                         />
                     }
-
-
                 </View>
-
-
             </TouchableOpacity>
         );
     };
@@ -430,9 +442,6 @@ if (!route.params.isPartner ) {
             >
                 <Entypo name="resize-full-screen" size={20} color={AppColor.white} />
             </TouchableOpacity>
-
-
-
 
             <View style={isFullScreen ? styles.videoFullContainer : styles.videoContainer}>
                 {/* <ImageBackground source={AppImages.logo} style={{width:'100%', height:'100%'}} resizeMode="stretch" imageStyle={{width:300, height:180}}> */}
@@ -514,7 +523,6 @@ if (!route.params.isPartner ) {
                     }
             </View>
 
-
             {!isFullScreen &&
                 <ScrollView style={styles.container}>
                     {playlistData.length > 0 &&
@@ -568,26 +576,25 @@ if (!route.params.isPartner ) {
 
                         </View>
 
-                        <View style={styles.commentListView}>
-                            <Text style={styles.title}>Comments</Text>
-                            <FlatList
-                                data={commentListData.slice(0, 4)}
-                                renderItem={commentListRenderItem}
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        </View>
-                        {commentListData?.length > 4 && (
-                            <TouchableOpacity
-                                style={{marginBottom: 5 ,marginTop : 5}}
-                                onPress={() => onPressViewAllComments()}>
-                                <Text style={{color: 'white'}}>View all comments</Text>
-                            </TouchableOpacity>
-                        )}
+                            {commentListData?.length > 0 ?
+                                <View style={styles.commentListView}>
+                                    <Text style={styles.title}>Comments</Text>
+                                    <FlatList
+                                        data={commentListData.slice(0, 4)}
+                                        renderItem={commentListRenderItem}
+                                        keyExtractor={(item, index) => index.toString()}
+                                    />
+                                    {commentListData?.length > 4 && (
+                                        <TouchableOpacity
+                                            style={{marginTop : 10}}
+                                            onPress={() => onPressViewAllComments()}>
+                                            <Text style={{color: 'white'}}>View all comments</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                </View> : null}
 
-
-
-                        <View>
-                            {/* <ScrollView horizontal>
+                            <View>
+                                {/* <ScrollView horizontal>
 
                                 {selectedVideo.comments.comments &&
                                     <View>
@@ -607,7 +614,7 @@ if (!route.params.isPartner ) {
                                 placeholderTextColor="#9E9E9E"
                                 style={[
                                     AppStyle.textInput,
-                                    {marginTop: 10},
+                                    {marginTop: 10, paddingTop:10},
                                 ]}
                                 autoCapitalize="none"
                                 multiline
@@ -644,7 +651,6 @@ if (!route.params.isPartner ) {
                     />
                 )) ||
                 null}
-
         </ImageBackground>
     )
 }
@@ -663,7 +669,6 @@ const mixedStyle = {
 }
 
 const styles = StyleSheet.create({
-
     video: {
         width: '100%',
         resizeMode: 'contain',
@@ -745,7 +750,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginBottom: 20
     },
-
     catScroller: {
         marginRight: 10,
         marginBottom: 15,
@@ -764,12 +768,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         marginVertical: 10
-
     },
     watchList: {
         flexDirection: 'row', alignItems: 'center',
         backgroundColor: AppColor.orange1, justifyContent: 'center',
-
         borderRadius: 25,
         paddingVertical: 7,
         paddingHorizontal: 15
@@ -778,7 +780,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 10,
         width: Constants.screenWidth / 2.3,
-
     },
     title: {
         fontSize: 18,
@@ -814,7 +815,6 @@ const styles = StyleSheet.create({
     commentDetails: {
         alignSelf: 'flex-start',
         marginLeft: 10,
-
     },
     play: {
         position: 'absolute',
@@ -838,7 +838,6 @@ const styles = StyleSheet.create({
     episodeDetails: {
         width: '25%',
         // marginleft: 15,
-
     },
     episodeThumbnail: {
         width: '100%',
@@ -854,7 +853,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: AppColor.white,
         fontWeight: 'bold',
-
     },
     singleCommentView: {
         flexDirection: 'row',
@@ -873,6 +871,9 @@ const styles = StyleSheet.create({
     commentUserPic: {
         width: 36,
         height: 36,
+    },
+    commentListView:{
+      marginBottom : 20
     },
     placeHolderView: {
         position: 'absolute',
