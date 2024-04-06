@@ -13,16 +13,16 @@ const ResetPassword = ({ navigation }) => {
     const [email, setEmail] = useState("");
 
     const onSubmit = async () => {
-      
+
         if (
         validationFunctions.checkEmail('Email',email)) {
-           
+
         // Helper.showLoader()
 
 
     let data = {
         "email": email,
-       
+
     }
     Helper.makeRequest({ url: ApiUrl.ForgotPassword, method: "POST", data: data }).then((response) => {
 
@@ -56,10 +56,10 @@ const ResetPassword = ({ navigation }) => {
                         <Image source={AppImages.Back} style={{ marginBottom: 7 }} />
                     </TouchableOpacity>
                 </View>
-                
+
             </View> */}
 
-<View style={styles.header}>
+    <View style={styles.header}>
 
     <TouchableOpacity onPress={() => navigation.goBack()}>
     <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
@@ -67,7 +67,7 @@ const ResetPassword = ({ navigation }) => {
     </TouchableOpacity>
 
 
-</View>
+    </View>
 
             <Image style={[AppStyle.logo, { marginTop: 15 }]} source={AppImages.logo} />
             <View style={{ marginBottom: 30, marginTop: -20, alignItems: 'center' }}>
