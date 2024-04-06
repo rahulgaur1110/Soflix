@@ -32,7 +32,7 @@ const Login = ({ navigation }) => {
 
 
     const LoginCall = async () => {
-
+        Keyboard.dismiss();
         if (validationFunctions.checkEmail('Email', email) && validationFunctions.checkRequired('password', password)) {
             // Helper.showLoader()
             console.log('hello!')
@@ -86,10 +86,11 @@ const Login = ({ navigation }) => {
                 maxLength={30}
                 // secureTextEntry={data.secureTextEntry ? true : false}
                 returnKeyType="next"
-                // onSubmitEditing={() => { Password1.focus(); }}
+                onSubmitEditing={() => { Password.focus(); }}
                 blurOnSubmit={false}
             />
             <TextInput
+                ref={(input) => { Password = input; }}
                 placeholder="Password"
                 value={password}
                 placeholderTextColor="#9E9E9E"
@@ -99,8 +100,8 @@ const Login = ({ navigation }) => {
                 maxLength={30}
                 secureTextEntry
                 // secureTextEntry={data.secureTextEntry ? true : false}
-                returnKeyType="next"
-                // onSubmitEditing={() => { Password1.focus(); }}
+                returnKeyType="done"
+                onSubmitEditing={() => { LoginCall(); }}
                 blurOnSubmit={false}
             />
             <View style={{ paddingTop: 40 }}>

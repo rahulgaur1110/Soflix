@@ -1,4 +1,4 @@
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {Image, ImageBackground, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback} from 'react-native'
 import React, { useState } from 'react'
 import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
@@ -54,6 +54,7 @@ const ChangePassword = ({navigation}) => {
         }
     };
     return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
         imageStyle={AppStyle.imageContainer}
         >
@@ -75,6 +76,7 @@ const ChangePassword = ({navigation}) => {
                     blurOnSubmit={false}
                     secureTextEntry={oldPasswordSecure}
                     onChangeText={(value) => setOldpassword(value)}
+                    onSubmitEditing={Keyboard.dismiss}
                 />
                 <TouchableOpacity onPress={() => setOldPasswordSecure(!oldPasswordSecure)}>
                     {oldPasswordSecure ?
@@ -104,6 +106,7 @@ const ChangePassword = ({navigation}) => {
                     blurOnSubmit={false}
                     secureTextEntry={newPasswordSecure}
                     onChangeText={(value) => setNewpassword(value)}
+                    onSubmitEditing={Keyboard.dismiss}
                 />
                 <TouchableOpacity onPress={() => setNewPasswordSecure(!newPasswordSecure)}>
                     {newPasswordSecure ?
@@ -133,6 +136,7 @@ const ChangePassword = ({navigation}) => {
                     blurOnSubmit={false}
                     secureTextEntry={confirmPasswordSecure}
                     onChangeText={(value) => setconfirmPassword(value)}
+                    onSubmitEditing={Keyboard.dismiss}
                 />
                 <TouchableOpacity onPress={() => setConfirmPasswordSecure(!confirmPasswordSecure)}>
                     {confirmPasswordSecure ?
@@ -158,6 +162,7 @@ const ChangePassword = ({navigation}) => {
             </View>
 
         </ImageBackground>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -182,11 +187,11 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom:20,
         paddingHorizontal: 10,
-        paddingVertical:14
     },
     textInputStyle:{
         color: 'white',
         fontSize: 14,
-        flex:1
+        flex:1,
+        paddingVertical:14
     }
 })
