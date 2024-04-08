@@ -1,4 +1,4 @@
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {Image, ImageBackground, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
@@ -43,7 +43,7 @@ const EditProfile = ({navigation}) => {
             if (file.didCancel==true){
                 console.log("else hello", file)
                 setProfileImage(profileImage);
-            } else 
+            } else
             if (file.assets[0].uri) {
                 console.log("--------------------------")
                 console.log("hello2", file.assets[0].uri)
@@ -98,62 +98,66 @@ const EditProfile = ({navigation}) => {
     };
 
     return (
-        <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
-        imageStyle={AppStyle.imageContainer}
-        >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{position:'absolute'}}>
+            <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
+                             imageStyle={AppStyle.imageContainer}
+            >
 
-<Header onPress={() => navigation.goBack()}>Edit Profile</Header>
+                <Header onPress={() => navigation.goBack()}>Edit Profile</Header>
 
-        
-            
-            <View style={{ alignItems: 'center', marginBottom:20 }}>
-            {profileImage &&
+
+
+                <View style={{ alignItems: 'center', marginBottom:20 ,width: 100, height: 100,alignSelf:'center' }}>
+                    {profileImage &&
                         <TouchableOpacity onPress={() => { uploadImage() }}>
-                            
-                                <Image style={{ width: 100, height: 100, borderRadius: 100/2 }} source={{ uri: profileImage }} />
-                            
-                            <Image style={{ position: 'absolute', left: '19%', bottom: '5%' }} source={AppImages.Edit} />
+
+                            <Image style={{ width: 100, height: 100, borderRadius: 100/2 }} source={{ uri: profileImage }} />
+
+                            <Image style={{ position: 'absolute', right: '19%', bottom: '4%' }} source={AppImages.Edit} />
                         </TouchableOpacity>
                     }
-                    </View>
+                </View>
 
-            <TextInput
-                placeholder="Full Name"
-                value={name}
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                maxLength={30}
-                blurOnSubmit={false}
-                onChangeText={(value)=>setName(value)}
-            />
-            <TextInput
-                placeholder="Email"
-                value={email}
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput, {color:'grey'}]}
-                autoCapitalize="none"
-                maxLength={30}
-                blurOnSubmit={false}
-                // onChangeText={(value)=>setemail(value)}
-                editable={false}
-            />
-            <TextInput
-                placeholder="Mobile"
-                value={mobile}
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                maxLength={30}
-                blurOnSubmit={false}
-                onChangeText={(value)=>setmobile(value)}
-            />
+                <TextInput
+                    placeholder="Full Name"
+                    value={name}
+                    placeholderTextColor="#9E9E9E"
+                    style={[AppStyle.textInput]}
+                    autoCapitalize="none"
+                    maxLength={30}
+                    blurOnSubmit={false}
+                    onChangeText={(value)=>setName(value)}
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                />
+                <TextInput
+                    placeholder="Email"
+                    value={email}
+                    placeholderTextColor="#9E9E9E"
+                    style={[AppStyle.textInput, {color:'grey'}]}
+                    autoCapitalize="none"
+                    maxLength={30}
+                    blurOnSubmit={false}
+                    // onChangeText={(value)=>setemail(value)}
+                    editable={false}
+                />
+                <TextInput
+                    placeholder="Mobile"
+                    value={mobile}
+                    placeholderTextColor="#9E9E9E"
+                    style={[AppStyle.textInput]}
+                    autoCapitalize="none"
+                    maxLength={30}
+                    blurOnSubmit={false}
+                    onChangeText={(value)=>setmobile(value)}
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                />
 
-            <View style={{ paddingTop: 30 }}>
-                <MainButton onPress={updateChanges}>Submit</MainButton>
-            </View>
+                <View style={{ paddingTop: 30 }}>
+                    <MainButton onPress={updateChanges}>Submit</MainButton>
+                </View>
 
-        </ImageBackground>
+            </ImageBackground>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -170,5 +174,5 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
     },
-   
+
 })
