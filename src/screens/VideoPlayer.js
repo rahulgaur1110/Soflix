@@ -60,6 +60,7 @@ const VideoPlayer = ({navigation, route}) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const [visible, setVisible] = useState(false);
   const [skipTime, setSkipTime] = useState();
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -71,6 +72,7 @@ const VideoPlayer = ({navigation, route}) => {
 
   const getVideoDetails = async () => {
     // Helper.showLoader();
+    setLoading(true);
     let data = {
       video_id: videoId,
     };
@@ -80,6 +82,7 @@ const VideoPlayer = ({navigation, route}) => {
           Helper.banner_path = response.data.banner_path;
           Helper.video_path = response.data.video_path;
           Helper.video_cover_path = response.data.video_cover_path;
+          setLoading(false);
           if (response.data.data) {
             setVideoData(response.data.data[0]);
 
@@ -104,6 +107,7 @@ const VideoPlayer = ({navigation, route}) => {
         }
       })
       .catch(err => {
+        setLoading(false);
         //   Helper.hideLoader()
         console.log(err);
       });
@@ -201,7 +205,9 @@ const VideoPlayer = ({navigation, route}) => {
           Helper.showToast(response.message);
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -419,284 +425,305 @@ const VideoPlayer = ({navigation, route}) => {
       resizeMode="stretch"
       source={AppImages.background}
       imageStyle={{opacity: 0.7}}>
-      <TouchableOpacity
-        onPress={() => goBack()}
-        style={{position: 'absolute', top: 40, left: 10, zIndex: 40}}>
-        <AntDesign name="arrowleft" size={20} color={AppColor.white} />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={handleFullscreen}
-        style={{
-          position: 'absolute',
-          top: 40,
-          right: 10,
-          zIndex: 40,
-        }}>
-        <Entypo name="resize-full-screen" size={20} color={AppColor.white} />
-      </TouchableOpacity>
-
-      {/*<KeyboardAvoidingView*/}
-      {/*  style={{flex: 1}}*/}
-      {/*  behavior={Platform.OS === 'ios' ? 'padding' : null}>*/}
-      <View
-        style={
-          isFullScreen ? styles.videoFullContainer : styles.videoContainer
-        }>
-        {/* <ImageBackground source={AppImages.logo} style={{width:'100%', height:'100%'}} resizeMode="stretch" imageStyle={{width:300, height:180}}> */}
-        {showSkipButton && videoData?.advertise_enabled === 1 && (
-          <TouchableOpacity onPress={handleSkipAd} style={styles.skipAdButton}>
-            <Text style={styles.catDetails}>Skip Ad</Text>
+      {loading ? (
+        <ActivityIndicator
+          size={'small'}
+          color={AppColor.white}
+          style={{alignSelf: 'center', top: 400}}
+        />
+      ) : (
+        <>
+          <TouchableOpacity
+            onPress={() => goBack()}
+            style={{position: 'absolute', top: 40, left: 10, zIndex: 40}}>
+            <AntDesign name="arrowleft" size={20} color={AppColor.white} />
           </TouchableOpacity>
-        )}
 
-        {visible ? <ActivityIndicatorElement /> : null}
+          <TouchableOpacity
+            onPress={handleFullscreen}
+            style={{
+              position: 'absolute',
+              top: 40,
+              right: 10,
+              zIndex: 40,
+            }}>
+            <Entypo
+              name="resize-full-screen"
+              size={20}
+              color={AppColor.white}
+            />
+          </TouchableOpacity>
 
-        {route.params.isPartner ? (
-          <>
-            {episodeData?.advertise_enabled === 1 &&
-            adIsPlaying &&
-            !videoIsPlaying ? (
-              <WebView
-                source={{
-                  uri: episodeData.advertise_url,
-                }}
-                style={{flex: 1, backgroundColor: 'black'}}
-                // renderLoading={this.LoadingIndicatorView}
-                domStorageEnabled={true}
-                onLoadStart={() => setVisible(true)}
-                onLoad={() => setVisible(false)}
-                // startInLoadingState
-                javaScriptEnabled={true}
-                allowsInlineMediaPlayback={true} // Disables the default video player
-                mediaPlaybackRequiresUserAction={false} // Allows autoplay
-              />
+          {/*<KeyboardAvoidingView*/}
+          {/*  style={{flex: 1}}*/}
+          {/*  behavior={Platform.OS === 'ios' ? 'padding' : null}>*/}
+          <View
+            style={
+              isFullScreen ? styles.videoFullContainer : styles.videoContainer
+            }>
+            {/* <ImageBackground source={AppImages.logo} style={{width:'100%', height:'100%'}} resizeMode="stretch" imageStyle={{width:300, height:180}}> */}
+            {showSkipButton && videoData?.advertise_enabled === 1 && (
+              <TouchableOpacity
+                onPress={handleSkipAd}
+                style={styles.skipAdButton}>
+                <Text style={styles.catDetails}>Skip Ad</Text>
+              </TouchableOpacity>
+            )}
+
+            {visible ? <ActivityIndicatorElement /> : null}
+
+            {route.params.isPartner ? (
+              <>
+                {episodeData?.advertise_enabled === 1 &&
+                adIsPlaying &&
+                !videoIsPlaying ? (
+                  <WebView
+                    source={{
+                      uri: episodeData.advertise_url,
+                    }}
+                    style={{flex: 1, backgroundColor: 'black'}}
+                    // renderLoading={this.LoadingIndicatorView}
+                    domStorageEnabled={true}
+                    onLoadStart={() => setVisible(true)}
+                    onLoad={() => setVisible(false)}
+                    // startInLoadingState
+                    javaScriptEnabled={true}
+                    allowsInlineMediaPlayback={true} // Disables the default video player
+                    mediaPlaybackRequiresUserAction={false} // Allows autoplay
+                  />
+                ) : (
+                  <WebView
+                    source={{
+                      uri: episodeData.file_path,
+                    }}
+                    style={{flex: 1, backgroundColor: 'black'}}
+                    // renderLoading={LoadingIndicatorView}
+                    // startInLoadingState={true}
+                    domStorageEnabled={true}
+                    onLoadStart={() => setVisible(true)}
+                    onLoad={() => setVisible(false)}
+                    javaScriptEnabled={true}
+                    allowsInlineMediaPlayback={true} // Disables the default video player
+                    mediaPlaybackRequiresUserAction={false} // Allows autoplay
+                  />
+                )}
+              </>
             ) : (
-              <WebView
-                source={{
-                  uri: episodeData.file_path,
-                }}
-                style={{flex: 1, backgroundColor: 'black'}}
-                // renderLoading={LoadingIndicatorView}
-                // startInLoadingState={true}
-                domStorageEnabled={true}
-                onLoadStart={() => setVisible(true)}
-                onLoad={() => setVisible(false)}
-                javaScriptEnabled={true}
-                allowsInlineMediaPlayback={true} // Disables the default video player
-                mediaPlaybackRequiresUserAction={false} // Allows autoplay
-              />
+              <>
+                {videoData?.advertise_enabled === 1 &&
+                adIsPlaying &&
+                !videoIsPlaying ? (
+                  <WebView
+                    source={{
+                      uri: videoData.advertise_url,
+                    }}
+                    style={{flex: 1, backgroundColor: 'black'}}
+                    // renderLoading={this.LoadingIndicatorView}
+                    domStorageEnabled={true}
+                    onLoadStart={() => setVisible(true)}
+                    onLoad={() => setVisible(false)}
+                    // startInLoadingState
+                    javaScriptEnabled={true}
+                    allowsInlineMediaPlayback={true} // Disables the default video player
+                    mediaPlaybackRequiresUserAction={false} // Allows autoplay
+                  />
+                ) : (
+                  <WebView
+                    source={{
+                      uri: videoData.file_path,
+                    }}
+                    style={{flex: 1, backgroundColor: 'black'}}
+                    // renderLoading={LoadingIndicatorView}
+                    // startInLoadingState={true}
+                    domStorageEnabled={true}
+                    onLoadStart={() => setVisible(true)}
+                    onLoad={() => setVisible(false)}
+                    javaScriptEnabled={true}
+                    allowsInlineMediaPlayback={true} // Disables the default video player
+                    mediaPlaybackRequiresUserAction={false} // Allows autoplay
+                  />
+                )}
+              </>
             )}
-          </>
-        ) : (
-          <>
-            {videoData?.advertise_enabled === 1 &&
-            adIsPlaying &&
-            !videoIsPlaying ? (
-              <WebView
-                source={{
-                  uri: videoData.advertise_url,
-                }}
-                style={{flex: 1, backgroundColor: 'black'}}
-                // renderLoading={this.LoadingIndicatorView}
-                domStorageEnabled={true}
-                onLoadStart={() => setVisible(true)}
-                onLoad={() => setVisible(false)}
-                // startInLoadingState
-                javaScriptEnabled={true}
-                allowsInlineMediaPlayback={true} // Disables the default video player
-                mediaPlaybackRequiresUserAction={false} // Allows autoplay
-              />
-            ) : (
-              <WebView
-                source={{
-                  uri: videoData.file_path,
-                }}
-                style={{flex: 1, backgroundColor: 'black'}}
-                // renderLoading={LoadingIndicatorView}
-                // startInLoadingState={true}
-                domStorageEnabled={true}
-                onLoadStart={() => setVisible(true)}
-                onLoad={() => setVisible(false)}
-                javaScriptEnabled={true}
-                allowsInlineMediaPlayback={true} // Disables the default video player
-                mediaPlaybackRequiresUserAction={false} // Allows autoplay
-              />
-            )}
-          </>
-        )}
-      </View>
+          </View>
 
-      {!isFullScreen && (
-        <ScrollView
-          contentContainerStyle={styles.scrollViewContent}
-          keyboardShouldPersistTaps="always"
-          ref={scrollViewRef}>
-          <View style={styles.container}>
-            {playlistData.length > 0 && (
-              <View>
-                <View style={styles.headerBG}>
-                  {route?.params?.isChannel ? (
-                    <Text style={styles.title}> Channels</Text>
-                  ) : (
-                    <Text style={styles.title}> Shows</Text>
-                  )}
-                </View>
-                <FlatList data={playlistData} renderItem={showEpisodes} />
-              </View>
-            )}
-
-            <View style={styles.movieHeading}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  alignItems: 'flex-start',
-                }}>
-                <Image
-                  style={{width: Constants.screenWidth / 5, height: 130}}
-                  source={{
-                    uri: route.params.isPartner
-                      ? episodeData.cover_path
-                      : videoData.cover_path,
-                  }}
-                />
-                <View style={styles.headingDetails}>
-                  <Text style={styles.title}>
-                    {route.params.isPartner
-                      ? episodeData?.title
-                      : videoData?.title}
-                  </Text>
-                  <Text style={styles.catDetails}>
-                    {route.params.isPartner
-                      ? episodeData?.langauges?.name
-                      : videoData?.langauges?.name}
-                  </Text>
-                  <Text style={styles.catDetails}>
-                    {route.params.isPartner
-                      ? episodeData?.year
-                      : videoData?.year}
-                  </Text>
-                </View>
-              </View>
-              {!route.params.isPartner && (
-                <TouchableOpacity
-                  style={[
-                    styles.watchList,
-                    {
-                      backgroundColor:
-                        watchlist == false ? AppColor.orange1 : '#444444',
-                    },
-                  ]}
-                  onPress={addToWatchList}>
-                  <Image source={AppImages.MenuAdd} />
-                  <Text style={{color: AppColor.white, fontSize: 12}}>
-                    {watchlist == false ? 'Watchlist' : 'Watchlisted'}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-
-            <View>
-              {/* {videoData?.description || episodeData.description &&  */}
-
-              <RenderHTML
-                contentWidth={Constants.screenWidth / 2}
-                source={{
-                  html: route.params.isPartner
-                    ? episodeData?.description
-                    : videoData?.description,
-                }}
-                tagsStyles={mixedStyle}
-              />
-            </View>
-
-            {commentListData?.length > 0 ? (
-              <View style={styles.commentListView}>
-                <Text style={styles.title}>Comments</Text>
-
-                {commentListData?.slice(0, 4).map(item => {
-                  return (
-                    <View style={styles.singleCommentView}>
-                      <View style={styles.mainImageView}>
-                        {item?.user?.profile_pic ? (
-                          <Image
-                            source={AppImages.DisplayPic}
-                            style={styles.commentUserPic}
-                          />
-                        ) : (
-                          <View style={styles.placeHolderView}>
-                            <Text style={styles.placeHolderText}>
-                              {ValidateFunction?.checkShortName(
-                                item?.user?.name || '',
-                              )}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                      <View>
-                        <Text style={{color: AppColor.white}}>
-                          {item?.user?.name}
-                        </Text>
-                        <Text style={{color: AppColor.white}}>
-                          {item?.comment}
-                        </Text>
-                      </View>
+          {!isFullScreen && (
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              keyboardShouldPersistTaps="always"
+              ref={scrollViewRef}>
+              <View style={styles.container}>
+                {playlistData.length > 0 && (
+                  <View>
+                    <View style={styles.headerBG}>
+                      {route?.params?.isChannel ? (
+                        <Text style={styles.title}> Channels</Text>
+                      ) : (
+                        <Text style={styles.title}> Shows</Text>
+                      )}
                     </View>
-                  );
-                })}
-                <>
-                  {commentListData?.length > 4 && (
+                    <FlatList data={playlistData} renderItem={showEpisodes} />
+                  </View>
+                )}
+
+                <View style={styles.movieHeading}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      alignItems: 'flex-start',
+                    }}>
+                    <Image
+                      style={{width: Constants.screenWidth / 5, height: 130}}
+                      source={{
+                        uri: route.params.isPartner
+                          ? episodeData.cover_path
+                          : videoData.cover_path,
+                      }}
+                    />
+                    <View style={styles.headingDetails}>
+                      <Text style={styles.title}>
+                        {route.params.isPartner
+                          ? episodeData?.title
+                          : videoData?.title}
+                      </Text>
+                      <Text style={styles.catDetails}>
+                        {route.params.isPartner
+                          ? episodeData?.langauges?.name
+                          : videoData?.langauges?.name}
+                      </Text>
+                      <Text style={styles.catDetails}>
+                        {route.params.isPartner
+                          ? episodeData?.year
+                          : videoData?.year}
+                      </Text>
+                    </View>
+                  </View>
+                  {!route.params.isPartner && (
                     <TouchableOpacity
-                      style={{marginTop: 10}}
-                      onPress={() => onPressViewAllComments()}>
-                      <Text style={{color: 'white'}}>View all comments</Text>
+                      style={[
+                        styles.watchList,
+                        {
+                          backgroundColor:
+                            watchlist == false ? AppColor.orange1 : '#444444',
+                        },
+                      ]}
+                      onPress={addToWatchList}>
+                      <Image source={AppImages.MenuAdd} />
+                      <Text style={{color: AppColor.white, fontSize: 12}}>
+                        {watchlist == false ? 'Watchlist' : 'Watchlisted'}
+                      </Text>
                     </TouchableOpacity>
                   )}
-                </>
+                </View>
+
+                <View>
+                  {/* {videoData?.description || episodeData.description &&  */}
+
+                  <RenderHTML
+                    contentWidth={Constants.screenWidth / 2}
+                    source={{
+                      html: route.params.isPartner
+                        ? episodeData?.description
+                        : videoData?.description,
+                    }}
+                    tagsStyles={mixedStyle}
+                  />
+                </View>
+
+                {commentListData?.length > 0 ? (
+                  <View style={styles.commentListView}>
+                    <Text style={styles.title}>Comments</Text>
+
+                    {commentListData?.slice(0, 4).map(item => {
+                      return (
+                        <View style={styles.singleCommentView}>
+                          <View style={styles.mainImageView}>
+                            {item?.user?.profile_pic ? (
+                              <Image
+                                source={AppImages.DisplayPic}
+                                style={styles.commentUserPic}
+                              />
+                            ) : (
+                              <View style={styles.placeHolderView}>
+                                <Text style={styles.placeHolderText}>
+                                  {ValidateFunction?.checkShortName(
+                                    item?.user?.name || '',
+                                  )}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+                          <View>
+                            <Text style={{color: AppColor.white}}>
+                              {item?.user?.name}
+                            </Text>
+                            <Text style={{color: AppColor.white}}>
+                              {item?.comment}
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                    <>
+                      {commentListData?.length > 4 && (
+                        <TouchableOpacity
+                          style={{marginTop: 10}}
+                          onPress={() => onPressViewAllComments()}>
+                          <Text style={{color: 'white'}}>
+                            View all comments
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </>
+                  </View>
+                ) : null}
+
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Text style={styles.title}>Leave a Comment</Text>
+                  <TextInput
+                    placeholder="Type a Comment..."
+                    placeholderTextColor="#9E9E9E"
+                    style={[
+                      AppStyle.textInput,
+                      {marginTop: 10, paddingTop: 10},
+                    ]}
+                    autoCapitalize="none"
+                    multiline={false}
+                    onChangeText={text => setCommentText(text)}
+                    value={commentText}
+                    returnKeyType="done"
+                    onSubmitEditing={() => {
+                      onPressPostComment();
+                    }}
+                  />
+                  <TouchableOpacity
+                    onPress={() => onPressPostComment()}
+                    style={[styles.watchList, {width: 170, marginBottom: 15}]}>
+                    <Text style={{color: AppColor.white, fontSize: 14}}>
+                      Post Your Comment
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <Text style={styles.heading}>Most Watched</Text>
+                  <FlatList
+                    keyExtractor={item => item.id}
+                    data={topMovieData}
+                    renderItem={item => showData(item)}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
               </View>
-            ) : null}
-
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-              }}>
-              <Text style={styles.title}>Leave a Comment</Text>
-              <TextInput
-                placeholder="Type a Comment..."
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput, {marginTop: 10, paddingTop: 10}]}
-                autoCapitalize="none"
-                multiline={false}
-                onChangeText={text => setCommentText(text)}
-                value={commentText}
-                returnKeyType="done"
-                onSubmitEditing={() => {
-                  onPressPostComment();
-                }}
-              />
-              <TouchableOpacity
-                onPress={() => onPressPostComment()}
-                style={[styles.watchList, {width: 170, marginBottom: 15}]}>
-                <Text style={{color: AppColor.white, fontSize: 14}}>
-                  Post Your Comment
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View>
-              <Text style={styles.heading}>Most Watched</Text>
-              <FlatList
-                keyExtractor={item => item.id}
-                data={topMovieData}
-                renderItem={item => showData(item)}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              />
-            </View>
-          </View>
-        </ScrollView>
+            </ScrollView>
+          )}
+        </>
       )}
       {/*</KeyboardAvoidingView>*/}
 
