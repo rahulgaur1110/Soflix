@@ -421,7 +421,7 @@ const VideoPlayer = ({navigation, route}) => {
       imageStyle={{opacity: 0.7}}>
       <TouchableOpacity
         onPress={() => goBack()}
-        style={{position: 'absolute', top: 40, left: 10, zIndex: 1}}>
+        style={{position: 'absolute', top: 40, left: 10, zIndex: 40}}>
         <AntDesign name="arrowleft" size={20} color={AppColor.white} />
       </TouchableOpacity>
 
