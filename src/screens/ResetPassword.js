@@ -1,4 +1,4 @@
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {Image, ImageBackground, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback} from 'react-native'
 import React, { useState } from 'react'
 import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
@@ -15,41 +15,42 @@ const ResetPassword = ({ navigation }) => {
     const onSubmit = async () => {
 
         if (
-        validationFunctions.checkEmail('Email',email)) {
+            validationFunctions.checkEmail('Email',email)) {
 
-        // Helper.showLoader()
+            // Helper.showLoader()
 
 
-    let data = {
-        "email": email,
+            let data = {
+                "email": email,
 
+            }
+            Helper.makeRequest({ url: ApiUrl.ForgotPassword, method: "POST", data: data }).then((response) => {
+
+                if (response.status == true) {
+                    // Helper.hideLoader()
+                    // setModalVisible(true)
+                    setEmail("")
+                    alert(response.message)
+
+                    Helper.showToast(response.message);
+                }
+                else {
+                    // Helper.hideLoader()
+                    alert(response.message)
+                    Helper.showToast(response.message);
+
+                }
+            }).catch(err => {
+                // Helper.hideLoader()
+                console.log(err)
+            })
+        }
     }
-    Helper.makeRequest({ url: ApiUrl.ForgotPassword, method: "POST", data: data }).then((response) => {
-
-        if (response.status == true) {
-            // Helper.hideLoader()
-            // setModalVisible(true)
-            setEmail("")
-            alert(response.message)
-
-            Helper.showToast(response.message);
-        }
-        else {
-            // Helper.hideLoader()
-            alert(response.message)
-            Helper.showToast(response.message);
-
-        }
-    }).catch(err => {
-        // Helper.hideLoader()
-        console.log(err)
-    })
-}
-}
     return (
-        <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={AppStyle.imageContainer}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
+            <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={AppStyle.imageContainer}>
 
-            {/* <View style={styles.header}>
+                {/* <View style={styles.header}>
 
                 <View style={{ }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -59,36 +60,41 @@ const ResetPassword = ({ navigation }) => {
 
             </View> */}
 
-    <View style={styles.header}>
+                <View style={styles.header}>
 
-    <TouchableOpacity onPress={() => navigation.goBack()}>
-    <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>
 
-    </TouchableOpacity>
+                    </TouchableOpacity>
 
 
-    </View>
+                </View>
 
-            <Image style={[AppStyle.logo, { marginTop: 15 }]} source={AppImages.logo} />
-            <View style={{ marginBottom: 30, marginTop: -20, alignItems: 'center' }}>
-                <Text style={styles.title}>Reset Your Password</Text>
-            </View>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
 
-            <TextInput
-                placeholder="Email"
-                value={email}
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                maxLength={30}
-                onChangeText={(value) => setEmail(value)}
-            />
+                    <Image style={[AppStyle.logo, { marginTop: 15 }]} source={AppImages.logo} />
+                </TouchableWithoutFeedback>
+                <View style={{ marginBottom: 30, marginTop: -20, alignItems: 'center' }}>
+                    <Text style={styles.title}>Reset Your Password</Text>
+                </View>
 
-            <View style={{ paddingTop: 30 }}>
-                <MainButton onPress={() => onSubmit()}>Submit</MainButton>
-            </View>
+                <TextInput
+                    placeholder="Email"
+                    value={email}
+                    placeholderTextColor="#9E9E9E"
+                    style={[AppStyle.textInput]}
+                    autoCapitalize="none"
+                    maxLength={30}
+                    onChangeText={(value) => setEmail(value)}
+                    onSubmitEditing={() => {Keyboard.dismiss(); }}
+                />
 
-        </ImageBackground>
+                <View style={{ paddingTop: 30 }}>
+                    <MainButton onPress={() => onSubmit()}>Submit</MainButton>
+                </View>
+
+            </ImageBackground>
+        </TouchableWithoutFeedback>
     )
 }
 

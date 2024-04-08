@@ -62,13 +62,13 @@ const SubCategory = ({ navigation, route }) => {
     const onPressCategory = (item) => {
         if (item.parent_id === 23 ) {
             console.log('category is Partner')
-            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true })
+            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true, videoId : item?.parent_id })
         } else if ( item.parent_id === 31 ) {
             console.log('category is TV Channel')
-            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true,isChannel:true })
+            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true,isChannel:true, videoId : item?.parent_id })
         } else {
             console.log('category is not Partner')
-            navigation.navigate('Category', { categoryId: item.id })
+            navigation.navigate('Category', { categoryId: item.id, videoId : item?.parent_id })
         }
     }
 
@@ -79,7 +79,7 @@ const SubCategory = ({ navigation, route }) => {
                     // onPress={()=>navigation.navigate('Category', { categoryId: item.id })}
                     onPress={() => onPressCategory(item)}
                     style={styles.catScroller} key={index}>
-                   
+
                         {item.parent_id === 23 || item.parent_id === 31 ?
                          <View style={styles.catBoxImage}>
                             <Image
@@ -89,12 +89,12 @@ const SubCategory = ({ navigation, route }) => {
                             style={styles.trendThumbnail}
                         />
                         </View>
-                         : 
+                         :
                          <View style={styles.catBox}>
                             <Icon name={categoryIcon} size={30} color={'grey'} />
                             </View>
                         }
-                    
+
                     <Text style={styles.catDetails}>{item?.name}</Text>
                 </TouchableOpacity>
             </View>
@@ -131,7 +131,7 @@ const SubCategory = ({ navigation, route }) => {
 
 
                 <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                   
+
                  {categoryId === 31 &&
                  <View style={AppStyle.searchBox}>
                 <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
@@ -146,7 +146,7 @@ const SubCategory = ({ navigation, route }) => {
             </View>
             }
 
-{filteredChannel? 
+{filteredChannel?
 
                     <View style={{ marginBottom: 40, alignItems: 'center' }}>
                         <FlatList

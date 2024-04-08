@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Text, View, StyleSheet, Image } from 'react-native';
+import {Button, Text, View, StyleSheet, Image, Platform} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -182,14 +182,14 @@ const styles = StyleSheet.create({
   footer_Icon: {
 
     borderRadius: 32,padding:5,
-    paddingTop: 2.5,
+    paddingTop: Platform.OS === 'android' ? 0 : 2.5,
 
   },
 
   bottomBox: {
     justifyContent: 'center', alignItems: 'center',
     width:40,
-    marginTop: 12,
+    marginTop: Platform.OS === 'android' ? 0 : 12,
   }
 });
 

@@ -32,7 +32,6 @@ import RenderHTML from 'react-native-render-html';
 import WebView from 'react-native-webview';
 import {CommentSectionModal} from './Modal/commentSectionModal';
 import ValidateFunction from '../assets/common/ValidateFunction';
-import Video from 'react-native-video';
 
 const VideoPlayer = ({navigation, route}) => {
   const scrollRef = useRef(null);
@@ -61,12 +60,6 @@ const VideoPlayer = ({navigation, route}) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const [visible, setVisible] = useState(false);
   const [skipTime, setSkipTime] = useState();
-
-  console.log('params:', route.params);
-  // console.log('videoData:', videoData)
-  // console.log('playlistData:', playlistData)
-
-  const playerRef = useRef();
 
   useFocusEffect(
     useCallback(() => {
@@ -163,7 +156,6 @@ const VideoPlayer = ({navigation, route}) => {
   }, []);
 
   const onPressPostComment = () => {
-    Keyboard.dismiss();
     if (commentText?.length > 0) {
       let data = {
         video_id: videoId,
@@ -179,6 +171,7 @@ const VideoPlayer = ({navigation, route}) => {
           if (response.status === true) {
             getCommentList();
             setCommentText('');
+            Keyboard.dismiss();
           }
         })
         .catch(err => {
@@ -357,31 +350,6 @@ const VideoPlayer = ({navigation, route}) => {
     // console.log('Episode2:', episodeData)
   };
 
-  const commentListRenderItem = ({item}) => {
-    return (
-      <View style={styles.singleCommentView}>
-        <View style={styles.mainImageView}>
-          {item?.user?.profile_pic ? (
-            <Image
-              source={AppImages.DisplayPic}
-              style={styles.commentUserPic}
-            />
-          ) : (
-            <View style={styles.placeHolderView}>
-              <Text style={styles.placeHolderText}>
-                {ValidateFunction?.checkShortName(item?.user?.name || '')}
-              </Text>
-            </View>
-          )}
-        </View>
-        <View>
-          <Text style={{color: AppColor.white}}>{item?.user?.name}</Text>
-          <Text style={{color: AppColor.white}}>{item?.comment}</Text>
-        </View>
-      </View>
-    );
-  };
-
   const showEpisodes = ({item, index}) => {
     return (
       <TouchableOpacity
@@ -486,6 +454,8 @@ const VideoPlayer = ({navigation, route}) => {
                 onLoad={() => setVisible(false)}
                 // startInLoadingState
                 javaScriptEnabled={true}
+                allowsInlineMediaPlayback={true} // Disables the default video player
+                mediaPlaybackRequiresUserAction={false} // Allows autoplay
               />
             ) : (
               <WebView
@@ -499,6 +469,8 @@ const VideoPlayer = ({navigation, route}) => {
                 onLoadStart={() => setVisible(true)}
                 onLoad={() => setVisible(false)}
                 javaScriptEnabled={true}
+                allowsInlineMediaPlayback={true} // Disables the default video player
+                mediaPlaybackRequiresUserAction={false} // Allows autoplay
               />
             )}
           </>
@@ -518,6 +490,8 @@ const VideoPlayer = ({navigation, route}) => {
                 onLoad={() => setVisible(false)}
                 // startInLoadingState
                 javaScriptEnabled={true}
+                allowsInlineMediaPlayback={true} // Disables the default video player
+                mediaPlaybackRequiresUserAction={false} // Allows autoplay
               />
             ) : (
               <WebView
@@ -531,6 +505,8 @@ const VideoPlayer = ({navigation, route}) => {
                 onLoadStart={() => setVisible(true)}
                 onLoad={() => setVisible(false)}
                 javaScriptEnabled={true}
+                allowsInlineMediaPlayback={true} // Disables the default video player
+                mediaPlaybackRequiresUserAction={false} // Allows autoplay
               />
             )}
           </>
@@ -540,6 +516,7 @@ const VideoPlayer = ({navigation, route}) => {
       {!isFullScreen && (
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
+          keyboardShouldPersistTaps="always"
           ref={scrollViewRef}>
           <View style={styles.container}>
             {playlistData.length > 0 && (
@@ -682,12 +659,12 @@ const VideoPlayer = ({navigation, route}) => {
                 value={commentText}
                 returnKeyType="done"
                 onSubmitEditing={() => {
-                  Keyboard.dismiss();
+                  onPressPostComment();
                 }}
               />
               <TouchableOpacity
                 onPress={() => onPressPostComment()}
-                style={[styles.watchList, {width: 170, marginBottom: 15}]}>
+                style={[styles.watchList, {width: 170, marginBottom: 15,}]}>
                 <Text style={{color: AppColor.white, fontSize: 14}}>
                   Post Your Comment
                 </Text>
@@ -737,7 +714,7 @@ const mixedStyle = {
 const styles = StyleSheet.create({
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: 120,
+    paddingBottom: Platform.OS === 'android' ? 0 : 120,
   },
   video: {
     width: '100%',
