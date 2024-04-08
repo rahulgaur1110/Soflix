@@ -16,12 +16,14 @@ import AppStyle from '../assets/common/AppStyle'
 import validationFunctions from '../assets/common/ValidateFunction'
 import Helper from '../assets/common/lib/Helper'
 import ApiUrl from '../assets/common/lib/ApiUrl'
+import VectorIcon from "./VectorIcon";
 
 
 const Login = ({ navigation }) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [oldPasswordSecure, setOldPasswordSecure] = useState(true);
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -89,21 +91,32 @@ const Login = ({ navigation }) => {
                 onSubmitEditing={() => { Password.focus(); }}
                 blurOnSubmit={false}
             />
-            <TextInput
-                ref={(input) => { Password = input; }}
-                placeholder="Password"
-                value={password}
-                placeholderTextColor="#9E9E9E"
-                style={[AppStyle.textInput]}
-                autoCapitalize="none"
-                onChangeText={(val) => setPassword(val)}
-                maxLength={30}
-                secureTextEntry
-                // secureTextEntry={data.secureTextEntry ? true : false}
-                returnKeyType="done"
-                onSubmitEditing={() => { LoginCall(); }}
-                blurOnSubmit={false}
-            />
+            <View style={styles.textInputBox}>
+                <TextInput
+                    ref={(input) => { Password = input; }}
+                    placeholder="Password"
+                    value={password}
+                    placeholderTextColor="#9E9E9E"
+                    style={styles.textInputStyle}
+                    autoCapitalize="none"
+                    onChangeText={(val) => setPassword(val)}
+                    maxLength={30}
+                    // secureTextEntry={data.secureTextEntry ? true : false}
+                    returnKeyType="done"
+                    onSubmitEditing={() => { LoginCall(); }}
+                    blurOnSubmit={false}
+                    secureTextEntry={oldPasswordSecure}
+                />
+                <TouchableOpacity onPress={() => setOldPasswordSecure(!oldPasswordSecure)}>
+                    <VectorIcon
+                        size={18}
+                        color="grey"
+                        iconName={oldPasswordSecure ? 'eye' : 'eye-with-line'}
+                        iconSet="Entypo"
+                    />
+                </TouchableOpacity>
+            </View>
+
             <View style={{ paddingTop: 40 }}>
                 <MainButton onPress={() => LoginCall()}>Login</MainButton>
             </View>
@@ -134,5 +147,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 30
+    },
+    textInputBox: {
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        backgroundColor:'#1F222A',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+    },
+    textInputStyle:{
+        color: 'white',
+        fontSize: 14,
+        flex:1,
+        paddingVertical:14
     }
 })
