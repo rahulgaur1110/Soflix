@@ -26,6 +26,9 @@ if linkage != nil
 end
 
 target 'Soflix' do
+  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera'
+    pod 'Permission-PhotoLibrary', :path => '../node_modules/react-native-permissions/ios/PhotoLibrary'
+
   config = use_native_modules!
 
   use_react_native!(

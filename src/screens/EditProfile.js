@@ -40,20 +40,23 @@ const EditProfile = ({navigation}) => {
     const uploadImage = () => {
         OpenCamera.open((file) => {
             console.log('on cancel',file);
-            if (file.didCancel==true){
-                console.log("else hello", file)
-                setProfileImage(profileImage);
-            } else
-            if (file.assets[0].uri) {
-                console.log("--------------------------")
-                console.log("hello2", file.assets[0].uri)
-                setProfileImage(file.assets[0].uri);
-                setUpdatedImage(true);
-                setProfileFile(file.assets[0].uri);
-            } else {
-                console.log("else hello", file)
-                setProfileImage(profileImage);
+            if(file?.errorCode !== 'camera_unavailable'){
+                if (file.didCancel==true){
+                    console.log("else hello", file)
+                    setProfileImage(profileImage);
+                } else
+                if (file?.assets[0]?.uri) {
+                    console.log("--------------------------")
+                    console.log("hello2", file.assets[0].uri)
+                    setProfileImage(file.assets[0].uri);
+                    setUpdatedImage(true);
+                    setProfileFile(file.assets[0].uri);
+                } else {
+                    console.log("else hello", file)
+                    setProfileImage(profileImage);
+                }
             }
+
         });
     }
 
