@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
+#import "Orientation.h"
 
 @implementation AppDelegate
 
@@ -26,6 +27,12 @@
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+// Override the supportedInterfaceOrientationsForWindow method
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+  // Return the desired orientations here
+  return [Orientation getOrientation];; // Change this according to your requirements
 }
 
 @end

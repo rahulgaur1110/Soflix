@@ -222,10 +222,19 @@ const VideoPlayer = ({navigation, route}) => {
   };
 
   const handleFullscreen = () => {
-    if (isFullScreen) {
-      Orientation.lockToPortrait();
+    if (Platform.OS === 'android') {
+      if (isFullScreen) {
+        Orientation.lockToPortrait();
+      } else {
+        Orientation.lockToLandscape();
+      }
     } else {
+      setIsFullScreen(true);
       Orientation.lockToLandscape();
+      if (isFullScreen) {
+        Orientation.lockToPortrait();
+        setIsFullScreen(false);
+      }
     }
   };
 
@@ -418,7 +427,12 @@ const VideoPlayer = ({navigation, route}) => {
 
       <TouchableOpacity
         onPress={handleFullscreen}
-        style={{position: 'absolute', top: 40, right: 10, zIndex: 1}}>
+        style={{
+          position: 'absolute',
+          top: 40,
+          right: 10,
+          zIndex: 40,
+        }}>
         <Entypo name="resize-full-screen" size={20} color={AppColor.white} />
       </TouchableOpacity>
 
@@ -664,7 +678,7 @@ const VideoPlayer = ({navigation, route}) => {
               />
               <TouchableOpacity
                 onPress={() => onPressPostComment()}
-                style={[styles.watchList, {width: 170, marginBottom: 15,}]}>
+                style={[styles.watchList, {width: 170, marginBottom: 15}]}>
                 <Text style={{color: AppColor.white, fontSize: 14}}>
                   Post Your Comment
                 </Text>
