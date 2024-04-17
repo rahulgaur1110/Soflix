@@ -4,8 +4,34 @@ import AppImages from '../assets/common/AppImages'
 import MainButton from '../assets/components/MainButton'
 import AppStyle from '../assets/common/AppStyle'
 import AppColor from '../assets/common/AppColors'
+import Helper from '../assets/common/lib/Helper'
+import ApiUrl from '../assets/common/lib/ApiUrl'
 
 const Profile = ({navigation}) => {
+
+    const signOutPress = async () => {
+        Helper.confirm("Are you sure, you want to sign out?", (cb)=>{
+            if (cb) {
+                let data = {
+                   
+                    "platform": Helper.device_type,
+                    "device_token": Helper.device_token //Static
+                }
+                Helper.makeRequest({ url: ApiUrl.SignOut, method: "POST", data: data }).then((response) => {
+                    if (response.status == true) {
+
+                Helper.setData("userdata", "")
+                Helper.setData("token", "")
+                navigation.replace('Login');
+            }
+           
+            }).catch(err => {
+              Helper.hideLoader()
+            })
+        } 
+    });  
+    }
+
     return (
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
         imageStyle={AppStyle.imageContainer}
@@ -64,7 +90,7 @@ const Profile = ({navigation}) => {
                     >
                     <Text style={styles.options}>Help</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
+                    <TouchableOpacity onPress={()=>signOutPress()}>
                     <Text style={styles.options}>Sign Out</Text>
                     </TouchableOpacity>
                    </View>

@@ -49,7 +49,9 @@ const Register = ({ navigation }) => {
                         setCountry("")
                         setPassword("")
                         setConfirmPassword("")
-                        Alert.alert("Your email has been registered Successfully!")
+                        // Alert.alert("Your email has been registered Successfully!")
+                        Helper.showToast(response.message);
+
                     }
                     else {
                         // Helper.hideLoader()
@@ -137,7 +139,7 @@ const Register = ({ navigation }) => {
                     style={[AppStyle.textInput]}
                     autoCapitalize="none"
                     maxLength={30}
-                    secureTextEntry
+                    // secureTextEntry
                     onSubmitEditing={() => { ConfirmPassword.focus(); }}
                     ref={(input) => { Password = input; }}
                     blurOnSubmit={false}
@@ -151,7 +153,7 @@ const Register = ({ navigation }) => {
                     style={[AppStyle.textInput]}
                     autoCapitalize="none"
                     maxLength={30}
-                    secureTextEntry
+                    // secureTextEntry
                     // onSubmitEditing={() => { Password.focus(); }}
                     ref={(input) => { ConfirmPassword = input; }}
                     blurOnSubmit={false}
