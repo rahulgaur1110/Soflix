@@ -9,16 +9,6 @@ import Helper from '../assets/common/lib/Helper'
 
 const Splash = ({navigation}) => {
 
-//   useEffect(() => {
-    
-//             setTimeout(() => {
-//             navigation.replace('Login');
-            
-//         }, 1500); // amount of time the splash is shown from the time component is rendered
-     
-  
-    
-// }, []);
 
 useEffect(() => {
   Helper.getData('userdata').then((res) => {
@@ -29,7 +19,7 @@ useEffect(() => {
           setTimeout(() => {
           navigation.replace('Login');
           
-      }, 1500); // amount of time the splash is shown from the time component is rendered
+      }, 2000); // amount of time the splash is shown from the time component is rendered
    
       }
 })
