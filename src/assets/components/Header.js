@@ -21,7 +21,7 @@ const Header = ({ onPress, children }) => {
                 setProfileImage(Config.ImageUrl + res.profile_pic);
 
           })
-          console.log("focus success")
+          console.log("focus success-")
         });
         return () => {
           // clean up event listener
@@ -40,9 +40,7 @@ const Header = ({ onPress, children }) => {
                             iconName={'arrowleft'}
                             iconSet={'AntDesign'}
                         />
-                    {/*<AntDesign name="arrowleft" size={20} color={'white'} style={{ marginBottom: 7 }}/>*/}
 
-                        {/* <Image source={AppImages.Back} style={{ marginBottom: 7 }} /> */}
                     </TouchableOpacity>
                     <Text style={[AppStyle.subHeading, { paddingLeft: 10 }]}>{children}</Text>
                 </View>
@@ -53,14 +51,13 @@ const Header = ({ onPress, children }) => {
   )
 }
 
-export default Header
+export default Header;
 
 const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        // marginTop: 10,
-        height:100
+        height:80,
     },
 })

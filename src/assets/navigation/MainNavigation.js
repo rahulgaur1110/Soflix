@@ -19,6 +19,8 @@ import AppColor from '../common/AppColors';
 import ChangePassword from '../../screens/ChangePassword';
 import SubCategory from '../../screens/SubCategory';
 import Category from '../../screens/Category';
+import TermsOfUsage from '../../screens/TermsOfUsage';
+import PrivacyPolicy from '../../screens/PrivacyPolicy';
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackScreen = () => (
@@ -66,6 +68,16 @@ function HomeStackScreen() {
       <HomeStack.Screen
         name="Profile"
         component={Profile}
+        options={{headerShown: false}}
+      />
+      <HomeStack.Screen
+        name="TermsOfUsage"
+        component={TermsOfUsage}
+        options={{headerShown: false}}
+      />
+      <HomeStack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicy}
         options={{headerShown: false}}
       />
       <HomeStack.Screen

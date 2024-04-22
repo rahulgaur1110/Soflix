@@ -52,6 +52,8 @@ const Register = ({ navigation }) => {
 
                     if (response.status == true) {
                         console.log('data:', data)
+                        Helper.showToast(response.message);
+
                         // Helper.hideLoader()
                         setName("")
                         setEmail("")
@@ -59,7 +61,7 @@ const Register = ({ navigation }) => {
                         setCountry("")
                         setPassword("")
                         setConfirmPassword("")
-                        Alert.alert("Your email has been registered Successfully!")
+
                     }
                     else {
                         // Helper.hideLoader()

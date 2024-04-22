@@ -6,6 +6,7 @@ import AppStyle from '../assets/common/AppStyle'
 import AppColor from '../assets/common/AppColors'
 import Helper from '../assets/common/lib/Helper'
 import Config from '../assets/common/lib/Config'
+import ApiUrl from '../assets/common/lib/ApiUrl'
 
 const Profile = ({navigation}) => {
     const [profileImage, setProfileImage] = useState('');
@@ -24,6 +25,29 @@ const Profile = ({navigation}) => {
           focusListener.remove();
         };
       }, []);
+
+      const signOutPress = async () => {
+        Helper.confirm("Are you sure, you want to sign out?", (cb)=>{
+            if (cb) {
+                let data = {
+                   
+                    "platform": Helper.device_type,
+                    "device_token": Helper.device_token //Static
+                }
+                Helper.makeRequest({ url: ApiUrl.SignOut, method: "POST", data: data }).then((response) => {
+                    if (response.status == true) {
+
+                Helper.setData("userdata", "")
+                Helper.setData("token", "")
+                navigation.replace('Login');
+            }
+           
+            }).catch(err => {
+              Helper.hideLoader()
+            })
+        } 
+    });  
+    }
 
     return (
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background}
@@ -52,10 +76,10 @@ const Profile = ({navigation}) => {
                         </TouchableOpacity>
                    </View>
 
-            <View style={{ marginVertical: 30, alignItems: 'center' }}>
+            <View style={{ marginVertical: 20, alignItems: 'center' }}>
             </View>
 
-            
+
             <View>
                     <TouchableOpacity onPress={()=>navigation.navigate('ChangePassword')}>
                     <Text style={styles.options}>Change Password</Text>
@@ -64,16 +88,17 @@ const Profile = ({navigation}) => {
                     <Text style={styles.options}>Watchlist</Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
-                    onPress={()=>console.warn('StaticPage')}
+                    onPress={()=>navigation.navigate('TermsOfUsage')}
                     >
                     <Text style={styles.options}>Terms of Usage</Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
-                    onPress={()=>console.warn('StaticPage')}
+                    onPress={()=>navigation.navigate('PrivacyPolicy')}
                     >
                     <Text style={styles.options}>Privacy Policy</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
+
+                    {/* <TouchableOpacity 
                     onPress={()=>console.warn('StaticPage')}
                     >
                     <Text style={styles.options}>About us</Text>
@@ -82,8 +107,8 @@ const Profile = ({navigation}) => {
                     onPress={()=>console.warn('DetailsPage')}
                     >
                     <Text style={styles.options}>Help</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity onPress={()=>signOutPress()}>
                     <Text style={styles.options}>Sign Out</Text>
                     </TouchableOpacity>
                    </View>

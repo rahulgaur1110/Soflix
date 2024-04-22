@@ -15,11 +15,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Orientation from 'react-native-orientation-locker';
 import AppImages from '../assets/common/AppImages';
 import AppStyle from '../assets/common/AppStyle';
-import {LocalData} from '../assets/common/LocalData';
+import { LocalData } from '../assets/common/LocalData';
 import Constants from '../assets/common/Constants';
 import AppColor from '../assets/common/AppColors';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -27,13 +27,14 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ApiUrl from '../assets/common/lib/ApiUrl';
 import Helper from '../assets/common/lib/Helper';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import RenderHTML from 'react-native-render-html';
 import WebView from 'react-native-webview';
-import {CommentSectionModal} from './Modal/commentSectionModal';
+import { CommentSectionModal } from './Modal/commentSectionModal';
 import ValidateFunction from '../assets/common/ValidateFunction';
+import Config from '../assets/common/lib/Config';
 
-const VideoPlayer = ({navigation, route}) => {
+const VideoPlayer = ({ navigation, route }) => {
   const scrollRef = useRef(null);
 
   const [height, setHeight] = useState();
@@ -54,7 +55,7 @@ const VideoPlayer = ({navigation, route}) => {
   const [commentListData, setCommentListData] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [commentModalVisible, setCommentModalVisible] = useState(false);
-
+  const [commentUserProfilePic, setCommentUserProfilePic] = useState('');
   const [showSkipButton, setShowSkipButton] = useState(false);
   const [adIsPlaying, setAdIsPlaying] = useState(true);
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
@@ -76,7 +77,7 @@ const VideoPlayer = ({navigation, route}) => {
     let data = {
       video_id: videoId,
     };
-    Helper.makeRequest({url: ApiUrl.VideoDetails, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoDetails, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           Helper.banner_path = response.data.banner_path;
@@ -100,15 +101,12 @@ const VideoPlayer = ({navigation, route}) => {
             setWatchlist(false);
           }
 
-          // Helper.hideLoader()
         } else {
-          // Helper.hideLoader()
           Helper.showToast(response.message);
         }
       })
       .catch(err => {
         setLoading(false);
-        //   Helper.hideLoader()
         console.log(err);
       });
     getTopMovies();
@@ -118,7 +116,7 @@ const VideoPlayer = ({navigation, route}) => {
     let data = {
       category_id: playlistId,
     };
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           setPlaylistData(response.data.data.data);
@@ -138,10 +136,11 @@ const VideoPlayer = ({navigation, route}) => {
       video_id: videoId,
       page: 1,
     };
-    Helper.makeRequest({url: ApiUrl.commentList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.commentList, method: 'POST', data: data })
       .then(response => {
         if (response.status === true) {
           setCommentListData(response?.data?.data?.data);
+
         } else {
           Helper.showToast(response.message);
         }
@@ -165,7 +164,6 @@ const VideoPlayer = ({navigation, route}) => {
         video_id: videoId,
         comment: commentText,
       };
-      // Helper.showLoader();
       Helper.makeRequest({
         url: ApiUrl.addComment,
         method: 'POST',
@@ -197,7 +195,7 @@ const VideoPlayer = ({navigation, route}) => {
     let data = {
       type: 'is_popular',
     };
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           setTopMovieData(response.data.data.data);
@@ -298,15 +296,15 @@ const VideoPlayer = ({navigation, route}) => {
     setCommentModalVisible(false);
   };
 
-  const showData = ({item, index}) => {
+  const showData = ({ item, index }) => {
     return (
       <View>
         <TouchableOpacity
-          onPress={() => navigation.push('VideoPlayer', {videoId: item.id})}
+          onPress={() => navigation.push('VideoPlayer', { videoId: item.id })}
           style={styles.catScroller}
           key={index}>
           <Image
-            source={{uri: item?.cover_path}}
+            source={{ uri: item?.cover_path }}
             style={styles.trendThumbnail}
           />
           {/* <Text>{item.id}</Text> */}
@@ -342,14 +340,14 @@ const VideoPlayer = ({navigation, route}) => {
       });
   };
 
-  const showComments = ({item, index}) => {
+  const showComments = ({ item, index }) => {
     return (
       <View style={styles.commentSection}>
         <View style={styles.commentIcon}>
           <EvilIcons name="user" size={25} color={'white'} />
         </View>
         <View style={styles.commentDetails}>
-          <Text style={[styles.catDetails, {color: '#ccc'}]}>
+          <Text style={[styles.catDetails, { color: '#ccc' }]}>
             {item.userName}
           </Text>
           <Text style={styles.catDetails}>{item.commentText}</Text>
@@ -365,12 +363,12 @@ const VideoPlayer = ({navigation, route}) => {
     // console.log('Episode2:', episodeData)
   };
 
-  const showEpisodes = ({item, index}) => {
+  const showEpisodes = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={
           index === playingIndex
-            ? [styles.episodeSection, {opacity: 0.6}]
+            ? [styles.episodeSection, { opacity: 0.6 }]
             : styles.episodeSection
         }
         onPress={() => onEpisodePress(item, index)}>
@@ -391,7 +389,7 @@ const VideoPlayer = ({navigation, route}) => {
           {item?.description && (
             <RenderHTML
               contentWidth={Constants.screenWidth / 2}
-              source={{html: item?.description}}
+              source={{ html: item?.description }}
               tagsStyles={mixedStyle}
             />
           )}
@@ -408,7 +406,7 @@ const VideoPlayer = ({navigation, route}) => {
       'keyboardDidShow',
       event => {
         if (scrollViewRef.current) {
-          scrollViewRef.current.scrollToEnd({animated: true});
+          scrollViewRef.current.scrollToEnd({ animated: true });
         }
       },
     );
@@ -419,23 +417,25 @@ const VideoPlayer = ({navigation, route}) => {
     };
   }, []);
 
+  const profilePath = 'public/Uploads/users_profile/';
+
   return (
     <ImageBackground
-      style={[AppStyle.mainContainer, {paddingHorizontal: 0, paddingTop: 0}]}
+      style={[AppStyle.mainContainer, { paddingHorizontal: 0, paddingTop: 0 }]}
       resizeMode="stretch"
       source={AppImages.background}
-      imageStyle={{opacity: 0.7}}>
+      imageStyle={{ opacity: 0.7 }}>
       {loading ? (
         <ActivityIndicator
           size={'small'}
           color={AppColor.white}
-          style={{alignSelf: 'center', top: 400}}
+          style={{ alignSelf: 'center', top: 400 }}
         />
       ) : (
         <>
           <TouchableOpacity
             onPress={() => goBack()}
-            style={{position: 'absolute', top: 40, left: 10, zIndex: 40}}>
+            style={{ position: 'absolute', top: 40, left: 10, zIndex: 40 }}>
             <AntDesign name="arrowleft" size={20} color={AppColor.white} />
           </TouchableOpacity>
 
@@ -475,13 +475,13 @@ const VideoPlayer = ({navigation, route}) => {
             {route.params.isPartner ? (
               <>
                 {episodeData?.advertise_enabled === 1 &&
-                adIsPlaying &&
-                !videoIsPlaying ? (
+                  adIsPlaying &&
+                  !videoIsPlaying ? (
                   <WebView
                     source={{
                       uri: episodeData.advertise_url,
                     }}
-                    style={{flex: 1, backgroundColor: 'black'}}
+                    style={{ flex: 1, backgroundColor: 'black' }}
                     // renderLoading={this.LoadingIndicatorView}
                     domStorageEnabled={true}
                     onLoadStart={() => setVisible(true)}
@@ -496,7 +496,7 @@ const VideoPlayer = ({navigation, route}) => {
                     source={{
                       uri: episodeData.file_path,
                     }}
-                    style={{flex: 1, backgroundColor: 'black'}}
+                    style={{ flex: 1, backgroundColor: 'black' }}
                     // renderLoading={LoadingIndicatorView}
                     // startInLoadingState={true}
                     domStorageEnabled={true}
@@ -511,13 +511,13 @@ const VideoPlayer = ({navigation, route}) => {
             ) : (
               <>
                 {videoData?.advertise_enabled === 1 &&
-                adIsPlaying &&
-                !videoIsPlaying ? (
+                  adIsPlaying &&
+                  !videoIsPlaying ? (
                   <WebView
                     source={{
                       uri: videoData.advertise_url,
                     }}
-                    style={{flex: 1, backgroundColor: 'black'}}
+                    style={{ flex: 1, backgroundColor: 'black' }}
                     // renderLoading={this.LoadingIndicatorView}
                     domStorageEnabled={true}
                     onLoadStart={() => setVisible(true)}
@@ -532,7 +532,7 @@ const VideoPlayer = ({navigation, route}) => {
                     source={{
                       uri: videoData.file_path,
                     }}
-                    style={{flex: 1, backgroundColor: 'black'}}
+                    style={{ flex: 1, backgroundColor: 'black' }}
                     // renderLoading={LoadingIndicatorView}
                     // startInLoadingState={true}
                     domStorageEnabled={true}
@@ -574,7 +574,7 @@ const VideoPlayer = ({navigation, route}) => {
                       alignItems: 'flex-start',
                     }}>
                     <Image
-                      style={{width: Constants.screenWidth / 5, height: 130}}
+                      style={{ width: Constants.screenWidth / 5, height: 130 }}
                       source={{
                         uri: route.params.isPartner
                           ? episodeData.cover_path
@@ -610,7 +610,7 @@ const VideoPlayer = ({navigation, route}) => {
                       ]}
                       onPress={addToWatchList}>
                       <Image source={AppImages.MenuAdd} />
-                      <Text style={{color: AppColor.white, fontSize: 12}}>
+                      <Text style={{ color: AppColor.white, fontSize: 12 }}>
                         {watchlist == false ? 'Watchlist' : 'Watchlisted'}
                       </Text>
                     </TouchableOpacity>
@@ -641,7 +641,8 @@ const VideoPlayer = ({navigation, route}) => {
                           <View style={styles.mainImageView}>
                             {item?.user?.profile_pic ? (
                               <Image
-                                source={AppImages.DisplayPic}
+                                // source={AppImages.DisplayPic}
+                                source={{ uri: Config.ImageUrl+profilePath+item?.user?.profile_pic }}
                                 style={styles.commentUserPic}
                               />
                             ) : (
@@ -655,10 +656,10 @@ const VideoPlayer = ({navigation, route}) => {
                             )}
                           </View>
                           <View>
-                            <Text style={{color: AppColor.white}}>
+                            <Text style={{ color: AppColor.white }}>
                               {item?.user?.name}
                             </Text>
-                            <Text style={{color: AppColor.white}}>
+                            <Text style={{ color: AppColor.white }}>
                               {item?.comment}
                             </Text>
                           </View>
@@ -668,9 +669,9 @@ const VideoPlayer = ({navigation, route}) => {
                     <>
                       {commentListData?.length > 4 && (
                         <TouchableOpacity
-                          style={{marginTop: 10}}
+                          style={{ marginTop: 10 }}
                           onPress={() => onPressViewAllComments()}>
-                          <Text style={{color: 'white'}}>
+                          <Text style={{ color: 'white' }}>
                             View all comments
                           </Text>
                         </TouchableOpacity>
@@ -690,7 +691,7 @@ const VideoPlayer = ({navigation, route}) => {
                     placeholderTextColor="#9E9E9E"
                     style={[
                       AppStyle.textInput,
-                      {marginTop: 10, paddingTop: 10},
+                      { marginTop: 10, paddingTop: 10 },
                     ]}
                     autoCapitalize="none"
                     multiline={false}
@@ -703,8 +704,8 @@ const VideoPlayer = ({navigation, route}) => {
                   />
                   <TouchableOpacity
                     onPress={() => onPressPostComment()}
-                    style={[styles.watchList, {width: 170, marginBottom: 15}]}>
-                    <Text style={{color: AppColor.white, fontSize: 14}}>
+                    style={[styles.watchList, { width: 170, marginBottom: 15 }]}>
+                    <Text style={{ color: AppColor.white, fontSize: 14 }}>
                       Post Your Comment
                     </Text>
                   </TouchableOpacity>

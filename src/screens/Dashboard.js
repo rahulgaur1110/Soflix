@@ -11,10 +11,8 @@ import {
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppImages from '../assets/common/AppImages';
 import AppStyle from '../assets/common/AppStyle';
-import {LocalData} from '../assets/common/LocalData';
 import Constants from '../assets/common/Constants';
 import AppColor from '../assets/common/AppColors';
 import ApiUrl from '../assets/common/lib/ApiUrl';
@@ -51,7 +49,6 @@ const Dashboard = ({navigation}) => {
   }, []);
 
   const getBannerData = async () => {
-    // Helper.showLoader();
     setLoading(true);
     Helper.makeRequest({url: ApiUrl.BannerList, method: 'POST'})
       .then(response => {
@@ -85,7 +82,7 @@ const Dashboard = ({navigation}) => {
           Helper.video_path = response.data.video_path;
           Helper.video_cover_path = response.data.video_cover_path;
           setCategoryData(response.data.data);
-
+          console.log('focus success:', profileImage);
           //   Helper.hideLoader()
         } else {
           //   Helper.hideLoader()

@@ -200,14 +200,14 @@ export class Helper extends Component {
                         console.log("Api Header---", JSON.stringify(varheaders))
                         console.log('')
                         console.log("Api URL*************** ", finalUrl);
-                        console.log('')
-                        console.log('')
-                        console.log("Api Data Send--------  ", apiData);
-                        console.log('')
-                        console.log('')
-                        console.log("Api Resp--------- ", JSON.stringify(responseJson))
-                        console.log('')
-                        console.log('')
+                        // console.log('')
+                        // console.log('')
+                        // console.log("Api Data Send--------  ", apiData);
+                        // console.log('')
+                        // console.log('')
+                        // console.log("Api Resp--------- ", JSON.stringify(responseJson))
+                        // console.log('')
+                        // console.log('')
 
                         return responseJson;
                     })
