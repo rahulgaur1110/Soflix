@@ -2,8 +2,8 @@
 
 
 const Config = {
- BaseUrl: "https://dribblecode.com/soflix/api",
- ImageUrl: "https://dribblecode.com/soflix/",
+ BaseUrl: "https://app.soflix.net/api",
+ ImageUrl: "https://app.soflix.net/",
  PrivacyPolicySlug: "privacy-policy",
  TermsOfUseSlug: "terms-of-use",
  AboutUsSlug: "about-us"

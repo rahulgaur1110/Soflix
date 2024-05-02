@@ -5,6 +5,7 @@ import {FlatList, Image, ImageBackground, Text, View} from 'react-native';
 import AppImages from '../../../assets/common/AppImages';
 import ValidateFunction from '../../../assets/common/ValidateFunction';
 import AppColor from '../../../assets/common/AppColors';
+import Config from '../../../assets/common/lib/Config';
 
 export const CommentSectionModal = ({
   isModalVisible,
@@ -12,12 +13,15 @@ export const CommentSectionModal = ({
   commentListData,
 }) => {
   const commentListRenderItem = ({item}) => {
+    const profilePath = 'public/Uploads/users_profile/';
+
     return (
       <View style={styles.singleCommentView}>
         <View style={styles.mainImageView}>
           {item?.user?.profile_pic ? (
             <Image
-              source={AppImages.DisplayPic}
+              // source={AppImages.DisplayPic}
+              source={{ uri: Config.ImageUrl+profilePath+item?.user?.profile_pic }}
               style={styles.commentUserPic}
             />
           ) : (

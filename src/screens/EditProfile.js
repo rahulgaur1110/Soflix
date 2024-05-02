@@ -29,8 +29,8 @@ const EditProfile = ({navigation}) => {
             setemail(res.email);
             setmobile(res.mobile);
             setProfileImage(Config.ImageUrl + res.profile_pic);
-            // console.log(Config.ImageUrl + res.profile_pic)
-            // console.log("this image:",profileImage)
+            console.log(Config.ImageUrl + res.profile_pic)
+            console.log("this image:",profileImage)
         })
 
     }, []);
@@ -65,9 +65,10 @@ const EditProfile = ({navigation}) => {
         // if (emailValid && passwordValid && mobileValid) {
 
         // Helper.showLoader()
+        console.log("update Changes:", profileFile)
+
         let tempdata = new FormData();
         tempdata.append('name', name);
-        tempdata.append('s_name', lastname);
         tempdata.append('email', email);
         tempdata.append('mobile', mobile);
         if (updatedImage) {
@@ -84,6 +85,8 @@ const EditProfile = ({navigation}) => {
                 Helper.setData('userdata', response.data.user)
                 Helper.showToast(response.message);
                 // Helper.hideLoader()
+                console.log("userdata:", response.data.user)
+
                 navigation.goBack()
 
             }
@@ -111,14 +114,14 @@ const EditProfile = ({navigation}) => {
 
 
                 <View style={{ alignItems: 'center', marginBottom:20 ,width: 100, height: 100,alignSelf:'center' }}>
-                    {profileImage &&
+                    {/* {profileImage && */}
                         <TouchableOpacity onPress={() => { uploadImage() }}>
 
                             <Image style={{ width: 100, height: 100, borderRadius: 100/2 }} source={{ uri: profileImage }} />
 
                             <Image style={{ position: 'absolute', right: '19%', bottom: '4%' }} source={AppImages.Edit} />
                         </TouchableOpacity>
-                    }
+                    {/* } */}
                 </View>
 
                 <TextInput
