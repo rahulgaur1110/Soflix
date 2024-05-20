@@ -25,8 +25,8 @@ const Category = ({ navigation, route }) => {
     console.log('categoryId', route?.params?.categoryId)
 
     useEffect(() => {
-        if(isFocused){
-        getCategoryMovies();
+        if (isFocused) {
+            getCategoryMovies();
         }
     }, [])
 
@@ -77,7 +77,7 @@ const Category = ({ navigation, route }) => {
 
     return (
         <ImageBackground style={[AppStyle.mainContainer, { justifyContent: 'space-between' }]} resizeMode="stretch" source={AppImages.background}
-        imageStyle={[AppStyle.imageContainer,]}
+            imageStyle={[AppStyle.imageContainer,]}
         >
             <ScrollView>
                 <View style={{ flex: 1 }}>
@@ -93,9 +93,9 @@ const Category = ({ navigation, route }) => {
                    ( <Text style={styles.heading}>SOFLIX</Text>)
 
                 } */}
-               
+
                         <ScrollView horizontal>
-                           
+
                             <View style={{ marginBottom: 40, alignItems: 'center' }}>
                                 <FlatList
                                     keyExtractor={(item) => item.id}

@@ -23,7 +23,7 @@ const SubCategory = ({ navigation, route }) => {
     const [subCategory, setSubCategory] = useState([])
 
     const [query, setQuery] = useState('');
-    const [filteredChannel,setFilteredChannel] = useState('');
+    const [filteredChannel, setFilteredChannel] = useState('');
 
     const [categoryId, setCategoryId] = useState(route?.params?.categoryId)
     const [categoryIcon, setCategoryIcon] = useState(route?.params?.categoryIcon)
@@ -60,40 +60,40 @@ const SubCategory = ({ navigation, route }) => {
     };
 
     const onPressCategory = (item) => {
-        if (item.parent_id === 23 ) {
+        if (item.parent_id == 23) {
             console.log('category is Partner')
-            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true, videoId : item?.parent_id })
-        } else if ( item.parent_id === 31 ) {
+            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true, videoId: item?.parent_id })
+        } else if (item.parent_id == 31) {
             console.log('category is TV Channel')
-            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true,isChannel:true, videoId : item?.parent_id })
+            navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true, isChannel: true, videoId: item?.parent_id })
         } else {
-            console.log('category is not Partner')
-            navigation.navigate('Category', { categoryId: item.id, videoId : item?.parent_id })
+            console.log('category is not Partner/TV Channel')
+            navigation.navigate('Category', { categoryId: item.id, videoId: item?.parent_id })
         }
     }
 
     const showData = ({ item, index }) => {
+        console.log('Item::',item);
         return (
             <View>
                 <TouchableOpacity
-                    // onPress={()=>navigation.navigate('Category', { categoryId: item.id })}
                     onPress={() => onPressCategory(item)}
                     style={styles.catScroller} key={index}>
 
-                        {item.parent_id === 23 || item.parent_id === 31 ?
-                         <View style={styles.catBoxImage}>
+                    {item.parent_id == 23 || item.parent_id == 31 ?
+                       ( <View style={styles.catBoxImage}>
                             <Image
-                            source={{
-                                uri: item.image_path
-                            }}
-                            style={styles.trendThumbnail}
-                        />
-                        </View>
-                         :
-                         <View style={styles.catBox}>
+                                source={{
+                                    uri: item.image_path
+                                }}
+                                style={styles.trendThumbnail}
+                            />
+                        </View>)
+                    :
+                        (<View style={styles.catBox}>
                             <Icon name={categoryIcon} size={30} color={'grey'} />
-                            </View>
-                        }
+                        </View>)
+                    }
 
                     <Text style={styles.catDetails}>{item?.name}</Text>
                 </TouchableOpacity>
@@ -106,15 +106,15 @@ const SubCategory = ({ navigation, route }) => {
             item.name.toLowerCase().includes(query.toLowerCase())
         );
         setFilteredChannel(filtered);
-        console.log('filteredData:',filteredChannel)
-        console.log('query:',query)
+        console.log('filteredData:', filteredChannel)
+        console.log('query:', query)
 
     };
     const renderEmptyComponent = () => (
-          <Text style={{color:'white'}}>No data found</Text>
-      );
+        <Text style={{ color: 'white' }}>No data found</Text>
+    );
 
-      const backNavigation = () => {
+    const backNavigation = () => {
         navigation.goBack()
         setFilteredChannel('')
         setQuery('');
@@ -132,44 +132,44 @@ const SubCategory = ({ navigation, route }) => {
 
                 <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
 
-                 {categoryId === 31 &&
-                 <View style={AppStyle.searchBox}>
-                <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
-                <TextInput
-                    placeholder="Search"
-                    placeholderTextColor="#767676"
-                    value={query}
-                    onChangeText={(value) => setQuery(value)}
-                    onSubmitEditing={() => handleSearch(query)}
-                    style={[styles.textInput]}
-                    autoCapitalize="none" />
-            </View>
-            }
+                    {categoryId === 31 &&
+                        <View style={AppStyle.searchBox}>
+                            <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
+                            <TextInput
+                                placeholder="Search"
+                                placeholderTextColor="#767676"
+                                value={query}
+                                onChangeText={(value) => setQuery(value)}
+                                onSubmitEditing={() => handleSearch(query)}
+                                style={[styles.textInput]}
+                                autoCapitalize="none" />
+                        </View>
+                    }
 
-{filteredChannel?
+                    {filteredChannel ?
 
-                    <View style={{ marginBottom: 40, alignItems: 'center' }}>
-                        <FlatList
-                            // keyExtractor={(item) => item.id}
-                            data={filteredChannel}
-                            renderItem={showData}
-                            numColumns={2}
-                            showsHorizontalScrollIndicator={false}
-                            ListEmptyComponent={renderEmptyComponent}
-                        />
-                    </View>
-                    :
-                    <View style={{ marginBottom: 40, alignItems: 'center' }}>
-                        <FlatList
-                            // keyExtractor={(item) => item.id}
-                            data={showSubCategories}
-                            renderItem={showData}
-                            numColumns={2}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
-}
-{/* {filteredChannel.length = [] &&
+                        <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                            <FlatList
+                                // keyExtractor={(item) => item.id}
+                                data={filteredChannel}
+                                renderItem={showData}
+                                numColumns={2}
+                                showsHorizontalScrollIndicator={false}
+                                ListEmptyComponent={renderEmptyComponent}
+                            />
+                        </View>
+                        :
+                        <View style={{ marginBottom: 40, alignItems: 'center' }}>
+                            <FlatList
+                                // keyExtractor={(item) => item.id}
+                                data={showSubCategories}
+                                renderItem={showData}
+                                numColumns={2}
+                                showsHorizontalScrollIndicator={false}
+                            />
+                        </View>
+                    }
+                    {/* {filteredChannel.length = [] &&
 <Text>No data found</Text>
 } */}
                 </View>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         width: 80
     },
-    catBoxImage:{
+    catBoxImage: {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',

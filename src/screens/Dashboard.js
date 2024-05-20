@@ -9,20 +9,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import React, { useEffect, useRef, useState } from 'react';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import AppImages from '../assets/common/AppImages';
 import AppStyle from '../assets/common/AppStyle';
 import Constants from '../assets/common/Constants';
 import AppColor from '../assets/common/AppColors';
 import ApiUrl from '../assets/common/lib/ApiUrl';
 import Helper from '../assets/common/lib/Helper';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import Config from '../assets/common/lib/Config';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import VectorIcon from './VectorIcon';
 
-const Dashboard = ({navigation}) => {
+const Dashboard = ({ navigation }) => {
   const isCarousel = useRef(null);
   const [index1, setIndex1] = useState(0);
   const [bannerData, setBannerData] = useState([]);
@@ -50,7 +50,7 @@ const Dashboard = ({navigation}) => {
 
   const getBannerData = async () => {
     setLoading(true);
-    Helper.makeRequest({url: ApiUrl.BannerList, method: 'POST'})
+    Helper.makeRequest({ url: ApiUrl.BannerList, method: 'POST' })
       .then(response => {
         setLoading(false);
         if (response.status == true) {
@@ -75,7 +75,7 @@ const Dashboard = ({navigation}) => {
 
   const getCategoryData = async () => {
     // Helper.showLoader();
-    Helper.makeRequest({url: ApiUrl.Categorylist, method: 'POST'})
+    Helper.makeRequest({ url: ApiUrl.Categorylist, method: 'POST' })
       .then(response => {
         if (response.status == true) {
           Helper.banner_path = response.data.banner_path;
@@ -99,7 +99,7 @@ const Dashboard = ({navigation}) => {
       type: 'is_trending',
     };
     // Helper.showLoader();
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           Helper.banner_path = response.data.banner_path;
@@ -124,7 +124,7 @@ const Dashboard = ({navigation}) => {
       category_id: '16',
     };
     // Helper.showLoader();
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           Helper.banner_path = response.data.banner_path;
@@ -149,7 +149,7 @@ const Dashboard = ({navigation}) => {
       category_id: '27',
     };
     // Helper.showLoader();
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           Helper.banner_path = response.data.banner_path;
@@ -174,7 +174,7 @@ const Dashboard = ({navigation}) => {
       type: 'is_popular',
     };
     // Helper.showLoader();
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           Helper.banner_path = response.data.banner_path;
@@ -218,7 +218,7 @@ const Dashboard = ({navigation}) => {
     let data = {
       type: 'is_top',
     };
-    Helper.makeRequest({url: ApiUrl.VideoList, method: 'POST', data: data})
+    Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
           setTopMovieData(response.data.data.data);
@@ -226,15 +226,15 @@ const Dashboard = ({navigation}) => {
           Helper.showToast(response.message);
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
-  const showCarousel = ({item, index}) => {
+  const showCarousel = ({ item, index }) => {
     return (
       <View>
         <TouchableOpacity
           style={styles.carouselScroller}
           onPress={() =>
-            navigation.navigate('VideoPlayer', {videoId: item.video_id})
+            navigation.navigate('VideoPlayer', { videoId: item.video_id })
           }
           key={index}>
           <Image
@@ -248,17 +248,17 @@ const Dashboard = ({navigation}) => {
     );
   };
 
-  const showData = ({item, index}) => {
+  const showData = ({ item, index }) => {
     return (
       <View key={'category_' + index}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('VideoPlayer', {videoId: item.id})}
+          onPress={() => navigation.navigate('VideoPlayer', { videoId: item.id })}
           style={styles.catScroller}
           key={'categoryButton_' + index}>
           <Image
             key={'categoryImage_' + index}
             // source={item.image}
-            source={{uri: item?.cover_path}}
+            source={{ uri: item?.cover_path }}
             style={styles.trendThumbnail}
           />
         </TouchableOpacity>
@@ -267,42 +267,55 @@ const Dashboard = ({navigation}) => {
   };
 
   const onPressCategory = item => {
-    // console.log('HomeItem:', item);
     if (
       item.active_sub_category != null &&
       item.active_sub_category != undefined &&
       item.active_sub_category.length > 0
     ) {
       console.log('active_sub_category is not blank');
-      navigation.navigate('SubCategory', {
-        categoryId: item.id,
-        categoryIcon: item.icon,
-      });
+      // if (item.id === 31 || item.id === 23) {
+      //   console.log('Category is TV Channels or Partner');
+      //   navigation.navigate('Category', { categoryId: item.id, categoryIcon: item.icon, });
+      // } else {
+        navigation.navigate('SubCategory', {
+          categoryId: item.id,
+          categoryIcon: item.icon,
+        });
+      // }
     } else {
       console.log('active_sub_category is blank');
-      navigation.navigate('Category', {categoryId: item.id});
+      navigation.navigate('Category', { categoryId: item.id });
     }
   };
 
-  const showCategories = ({item, index}) => {
+  const showCategories = ({ item, index }) => {
     return (
       <View style={styles.catScroller}>
         <TouchableOpacity
           key={index}
           onPress={() => onPressCategory(item)}
-          // onPress={() => navigation.navigate('TVChannel', { categoryId: item.id })}
+        // onPress={() => navigation.navigate('TVChannel', { categoryId: item.id })}
         >
           <View style={styles.catBox}>
-            <VectorIcon
-              size={18}
-              color={'grey'}
-              iconName={item.icon}
-              iconSet={'FontAwesome5'}
-            />
+            {item.icon != null && item.icon != undefined ? 
+              <VectorIcon
+                size={18}
+                color={'grey'}
+                iconName={item.icon}
+                iconSet={'FontAwesome5'}
+              />
+            :
+              <VectorIcon
+                size={18}
+                color={'grey'}
+                iconName={'play'}
+                iconSet={'FontAwesome5'}
+              />
+            }
             {/*<Icon name={item.icon} size={30} color={'grey'} />*/}
           </View>
-          <View style={{alignSelf: 'center'}}>
-            <Text style={[AppStyle.text, {alignSelf: 'center'}]}>
+          <View style={{ alignSelf: 'center' }}>
+            <Text style={[AppStyle.text, { alignSelf: 'center' }]}>
               {item.name}
             </Text>
           </View>
@@ -321,7 +334,7 @@ const Dashboard = ({navigation}) => {
         <ActivityIndicator
           size={'small'}
           color={AppColor.white}
-          style={{alignSelf: 'center', top: 400}}
+          style={{ alignSelf: 'center', top: 400 }}
         />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -329,14 +342,14 @@ const Dashboard = ({navigation}) => {
             <Image style={[styles.logo]} source={AppImages.logo} />
 
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-              <Image source={{uri: profileImage}} style={AppStyle.displayPic} />
+              <Image source={{ uri: profileImage }} style={AppStyle.displayPic} />
             </TouchableOpacity>
           </View>
           {bannerData.length < 0 ? (
             <ActivityIndicator size="large" style={styles.indicator} />
           ) : (
             <>
-              <View style={{flex: 2.5}}>
+              <View style={{ flex: 2.5 }}>
                 <Carousel
                   layout={'default'}
                   data={bannerData}
@@ -376,7 +389,7 @@ const Dashboard = ({navigation}) => {
                 />
               </View>
 
-              <View style={{flex: 1, alignItems: 'center'}}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
                 <FlatList
                   keyExtractor={item => item.id}
                   data={categoryData}
@@ -386,7 +399,7 @@ const Dashboard = ({navigation}) => {
                 />
               </View>
 
-              <View style={{flex: 2, alignItems: 'flex-start', marginTop: 20}}>
+              <View style={{ flex: 2, alignItems: 'flex-start', marginTop: 20 }}>
                 {trendingData.length > 0 ? (
                   <Text style={styles.heading}>Recently Added</Text>
                 ) : null}
@@ -399,7 +412,7 @@ const Dashboard = ({navigation}) => {
                 />
               </View>
 
-              <View style={{flex: 2, alignItems: 'flex-start', marginTop: 20}}>
+              <View style={{ flex: 2, alignItems: 'flex-start', marginTop: 20 }}>
                 {popularData.length > 0 ? (
                   <Text style={styles.heading}>Most Watched</Text>
                 ) : null}
@@ -413,7 +426,7 @@ const Dashboard = ({navigation}) => {
                 />
               </View>
 
-              <View style={{flex: 2, alignItems: 'flex-start', marginTop: 20}}>
+              <View style={{ flex: 2, alignItems: 'flex-start', marginTop: 20 }}>
                 {eventData.length > 0 ? (
                   <Text style={styles.heading}>Events</Text>
                 ) : null}
@@ -427,7 +440,7 @@ const Dashboard = ({navigation}) => {
                 />
               </View>
 
-              <View style={{flex: 2, alignItems: 'flex-start', marginTop: 20}}>
+              <View style={{ flex: 2, alignItems: 'flex-start', marginTop: 20 }}>
                 {kidShowData.length > 0 ? (
                   <Text style={styles.heading}>Kiddies Corner</Text>
                 ) : null}
@@ -442,7 +455,7 @@ const Dashboard = ({navigation}) => {
               </View>
             </>
           )}
-          <View style={{height: 60, flex: 0.5}} />
+          <View style={{ height: 60, flex: 0.5 }} />
         </ScrollView>
       )}
     </ImageBackground>
