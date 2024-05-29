@@ -27,45 +27,52 @@ const Search = ({ navigation }) => {
     const getTopMovies = async () => {
 
         let data = {
-          "type": "is_trending"
+            "type": "is_trending"
         }
         Helper.makeRequest({ url: ApiUrl.VideoList, method: "POST", data: data }).then((response) => {
-    
-          if (response.status == true) {
-            setTopMovieData(response.data.data.data)
-          }
-          else {
-    
-            Helper.showToast(response.message);
-    
-          }
-        }).catch(err => {
-    
-        })
-      };
 
-      const getSearchData = async () => {
+            if (response.status == true) {
+                if (response.deactive == 1) {
+                    Helper.showToast(response.message);
+                    Helper.setData('userdata', '');
+                    Helper.setData('token', '');
+                    navigation.replace('Login');
+                } else {
+                    setTopMovieData(response.data.data.data);
+                }
+            }
+            else {
+
+                Helper.showToast(response.message);
+
+            }
+        }).catch(err => {
+
+        })
+    };
+
+    const getSearchData = async () => {
 
         let data = {
-          "search_text": query
+            "search_text": query
         }
-        console.log('Display data:',data)
+        console.log('Display data:', data)
 
         Helper.makeRequest({ url: ApiUrl.VideoList, method: "POST", data: data }).then((response) => {
-    
-          if (response.status == true) {
-            setFilteredData(response.data.data.data)
-    console.log('searchedData:',response.data.data.data)
-          }
-          else {
-    
-            Helper.showToast(response.message);
-    
-          }
+
+            if (response.status == true) {
+                setFilteredData(response.data.data.data)
+                console.log('searchedData:', response.data.data.data)
+            }
+            else {
+
+                Helper.showToast(response.message);
+
+            }
         }).catch(err => {
-    
+
         })
-      };
+    };
 
     // const getFilteredData = async () => {
 
@@ -73,18 +80,18 @@ const Search = ({ navigation }) => {
     //       "search_text": query
     //     }
     //     Helper.makeRequest({ url: ApiUrl.VideoList, method: "POST", data: data }).then((response) => {
-    
+
     //       if (response.status == true) {
     //         setFilteredData(response.data.data.data)
     // console.log('Response:',response.data.data.data)
     //       }
     //       else {
-    
+
     //         Helper.showToast(response.message);
-    
+
     //       }
     //     }).catch(err => {
-    
+
     //     })
     //   };
 
@@ -96,7 +103,7 @@ const Search = ({ navigation }) => {
         // );
         // setFilteredData(filtered);
         getSearchData();
-        console.log('filteredData',filteredData)
+        console.log('filteredData', filteredData)
     };
 
 
@@ -108,7 +115,7 @@ const Search = ({ navigation }) => {
     }
 
     const renderEmptyComponent = () => (
-        <Text style={{color:'white'}}>No data found</Text>
+        <Text style={{ color: 'white' }}>No data found</Text>
     );
 
     const showData = ({ item, index }) => {
@@ -119,7 +126,7 @@ const Search = ({ navigation }) => {
                     onPress={() => navigation.push('VideoPlayer', { videoId: item.id })}
                     style={styles.catScroller} key={index}>
                     <Image
-                        source={{uri:item?.cover_path}}
+                        source={{ uri: item?.cover_path }}
                         style={styles.trendThumbnail}
                     />
                     <Text style={styles.title}>{item.title}</Text>
@@ -128,11 +135,11 @@ const Search = ({ navigation }) => {
         );
     };
 
-    
+
     const showTrends = ({ item, index }) => {
         return (
             <View style={styles.catScroller}>
-                <TouchableOpacity 
+                <TouchableOpacity
                 // onPress={() => navigation.navigate('VideoPlayer', { videoId: item.id })}
                 >
                     <Image
@@ -156,24 +163,24 @@ const Search = ({ navigation }) => {
         <ImageBackground style={[AppStyle.mainContainer,]} resizeMode="stretch" source={AppImages.background}
             imageStyle={[AppStyle.imageContainer,]}
         >
-<ScrollView>
+            <ScrollView>
 
-            <Header onPress={() => backNavigation()}>Search</Header>
+                <Header onPress={() => backNavigation()}>Search</Header>
 
-            <View style={AppStyle.searchBox}>
-                <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
-                <TextInput
-                    placeholder="Search"
-                    placeholderTextColor="#767676"
-                    value={query}
-                    onChangeText={(value) => setQuery(value)}
-                    onSubmitEditing={() => handleSearch(query)}
-                    style={[styles.textInput]}
-                    autoCapitalize="none" />
-            </View>
-            {query ? (
-            <View style={{marginHorizontal:20}} >
-           <Text style={styles.heading}>Search Result</Text>
+                <View style={AppStyle.searchBox}>
+                    <Image source={AppImages.SearchGrey} style={styles.ImageStyle} />
+                    <TextInput
+                        placeholder="Search"
+                        placeholderTextColor="#767676"
+                        value={query}
+                        onChangeText={(value) => setQuery(value)}
+                        onSubmitEditing={() => handleSearch(query)}
+                        style={[styles.textInput]}
+                        autoCapitalize="none" />
+                </View>
+                {query ? (
+                    <View style={{ marginHorizontal: 20 }} >
+                        <Text style={styles.heading}>Search Result</Text>
                         <FlatList
                             keyExtractor={(item) => item.id}
                             // keyExtractor={(item, index) => {
@@ -182,27 +189,27 @@ const Search = ({ navigation }) => {
                             //     return key;
                             // }}
                             data={filteredData}
-                            renderItem={(item)=>showData(item)}
+                            renderItem={(item) => showData(item)}
                             numColumns={2}
                             showsHorizontalScrollIndicator={false}
                             ListEmptyComponent={renderEmptyComponent}
                         />
+                    </View>
+                ) :
+                    (
+                        <View style={{ marginHorizontal: 20 }} >
+                            <Text style={styles.heading}>Recently Added</Text>
+                            <FlatList
+                                keyExtractor={(item) => item.id}
+                                data={topMovieData}
+                                renderItem={(item) => showData(item)}
+                                numColumns={2}
+                                showsHorizontalScrollIndicator={false}
+                            />
                         </View>
-            ):
-           (
-           <View style={{marginHorizontal:20}} >
-           <Text style={styles.heading}>Recently Added</Text>
-                        <FlatList
-                            keyExtractor={(item) => item.id}
-                            data={topMovieData}
-                            renderItem={(item)=>showData(item)}
-                            numColumns={2}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                        </View>
-    )
-           }
-            <View style={{height:50}}><Text>Hello</Text></View>
+                    )
+                }
+                <View style={{ height: 50 }}><Text>Hello</Text></View>
             </ScrollView>
         </ImageBackground>
 
@@ -287,7 +294,7 @@ const styles = StyleSheet.create({
         lineHeight: 28,
     },
     catScroller: {
-        width:Constants.screenWidth/2.5,
+        width: Constants.screenWidth / 2.5,
         marginRight: 10,
         marginBottom: 20,
         justifyContent: 'center',
@@ -299,10 +306,10 @@ const styles = StyleSheet.create({
         // width:150,
         height: 185,
         borderRadius: 5,
-        resizeMode:'contain',
-        
+        resizeMode: 'contain',
+
     },
-   
+
     textInput: {
         color: 'white',
         fontSize: 14,

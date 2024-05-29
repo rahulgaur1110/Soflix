@@ -80,27 +80,33 @@ const VideoPlayer = ({ navigation, route }) => {
     Helper.makeRequest({ url: ApiUrl.VideoDetails, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setLoading(false);
-          if (response.data.data) {
-            setVideoData(response.data.data[0]);
-
-            //   setVideReadyForWatch(true);
-            //   if (response.data.data[0].video_time.length > 0) {
-            //     setVideoResumeTime(response.data.data[0].video_time[0].time)
-            //   }
-          }
-          if (
-            response.data.data[0].watchlist[0] != null ||
-            response.data.data[0].watchlist[0] != undefined
-          ) {
-            setWatchlist(true);
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
           } else {
-            setWatchlist(false);
-          }
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setLoading(false);
+            if (response.data.data) {
+              setVideoData(response.data.data[0]);
 
+              //   setVideReadyForWatch(true);
+              //   if (response.data.data[0].video_time.length > 0) {
+              //     setVideoResumeTime(response.data.data[0].video_time[0].time)
+              //   }
+            }
+            if (
+              response.data.data[0].watchlist[0] != null ||
+              response.data.data[0].watchlist[0] != undefined
+            ) {
+              setWatchlist(true);
+            } else {
+              setWatchlist(false);
+            }
+          }
         } else {
           Helper.showToast(response.message);
         }
@@ -642,7 +648,7 @@ const VideoPlayer = ({ navigation, route }) => {
                             {item?.user?.profile_pic ? (
                               <Image
                                 // source={AppImages.DisplayPic}
-                                source={{ uri: Config.ImageUrl+profilePath+item?.user?.profile_pic }}
+                                source={{ uri: Config.ImageUrl + profilePath + item?.user?.profile_pic }}
                                 style={styles.commentUserPic}
                               />
                             ) : (

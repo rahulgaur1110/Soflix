@@ -35,34 +35,65 @@ const Dashboard = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [profileImage, setProfileImage] = useState('');
 
+  // useEffect(() => {
+  //   const focusListener = navigation.addListener('focus', () => {
+  //     Helper.getData('userdata').then(res => {
+  //       setProfileImage(Config.ImageUrl + res.profile_pic);
+  //     });
+  //     console.log('focus success');
+  //   });
+  //   return () => {
+  //     // clean up event listener
+  //     focusListener.remove();
+  //   };
+  // }, []);
+
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
       Helper.getData('userdata').then(res => {
         setProfileImage(Config.ImageUrl + res.profile_pic);
       });
-      console.log('focus success');
+      console.log('Focus success');
     });
+
     return () => {
-      // clean up event listener
-      focusListener.remove();
+      // Clean up the event listener
+      if (focusListener && typeof focusListener.remove === 'function') {
+        focusListener.remove();
+      } else if (focusListener && typeof focusListener === 'function') {
+        focusListener(); // Some versions of react-navigation might use this
+      }
     };
-  }, []);
+  }, [navigation]);
 
   const getBannerData = async () => {
     setLoading(true);
     Helper.makeRequest({ url: ApiUrl.BannerList, method: 'POST' })
       .then(response => {
         setLoading(false);
-        if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setBannerData(response.data.data);
+        if (response.status === true) {
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setBannerData(response.data.data);
+          }
 
           //   Helper.hideLoader()
         } else {
-          //   Helper.hideLoader()
-          Helper.showToast(response.message);
+          if (response.message === 'Unauthenticated') {
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            //   Helper.hideLoader()
+            Helper.showToast(response.message);
+          }
         }
         // getTopMovies();
       })
@@ -78,12 +109,19 @@ const Dashboard = ({ navigation }) => {
     Helper.makeRequest({ url: ApiUrl.Categorylist, method: 'POST' })
       .then(response => {
         if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setCategoryData(response.data.data);
-          console.log('focus success:', profileImage);
-          //   Helper.hideLoader()
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setCategoryData(response.data.data);
+            console.log('focus success:', profileImage);
+            //   Helper.hideLoader()
+          }
         } else {
           //   Helper.hideLoader()
           Helper.showToast(response.message);
@@ -102,11 +140,17 @@ const Dashboard = ({ navigation }) => {
     Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setTrendingData(response.data.data.data);
-
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setTrendingData(response.data.data.data);
+          }
           //   Helper.hideLoader()
         } else {
           //   Helper.hideLoader()
@@ -127,11 +171,17 @@ const Dashboard = ({ navigation }) => {
     Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setEventData(response.data.data.data);
-
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setEventData(response.data.data.data);
+          }
           //   Helper.hideLoader()
         } else {
           //   Helper.hideLoader()
@@ -152,11 +202,17 @@ const Dashboard = ({ navigation }) => {
     Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setKidShowData(response.data.data.data);
-
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setKidShowData(response.data.data.data);
+          }
           //   Helper.hideLoader()
         } else {
           //   Helper.hideLoader()
@@ -177,11 +233,17 @@ const Dashboard = ({ navigation }) => {
     Helper.makeRequest({ url: ApiUrl.VideoList, method: 'POST', data: data })
       .then(response => {
         if (response.status == true) {
-          Helper.banner_path = response.data.banner_path;
-          Helper.video_path = response.data.video_path;
-          Helper.video_cover_path = response.data.video_cover_path;
-          setPopularData(response.data.data.data);
-
+          if (response.deactive == 1) {
+            Helper.showToast(response.message);
+            Helper.setData('userdata', '');
+            Helper.setData('token', '');
+            navigation.replace('Login');
+          } else {
+            Helper.banner_path = response.data.banner_path;
+            Helper.video_path = response.data.video_path;
+            Helper.video_cover_path = response.data.video_cover_path;
+            setPopularData(response.data.data.data);
+          }
           //   Helper.hideLoader()
         } else {
           //   Helper.hideLoader()
@@ -202,17 +264,6 @@ const Dashboard = ({ navigation }) => {
     getKiddiesData();
     getPopularData();
   }, []);
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     getBannerData();
-  //     getCategoryData();
-  //     getTrendingData();
-  //     getEventData();
-  //     getKiddiesData();
-  //     getPopularData();
-  //   }, []),
-  // );
 
   const getTopMovies = async () => {
     let data = {
@@ -277,10 +328,10 @@ const Dashboard = ({ navigation }) => {
       //   console.log('Category is TV Channels or Partner');
       //   navigation.navigate('Category', { categoryId: item.id, categoryIcon: item.icon, });
       // } else {
-        navigation.navigate('SubCategory', {
-          categoryId: item.id,
-          categoryIcon: item.icon,
-        });
+      navigation.navigate('SubCategory', {
+        categoryId: item.id,
+        categoryIcon: item.icon,
+      });
       // }
     } else {
       console.log('active_sub_category is blank');
@@ -297,14 +348,14 @@ const Dashboard = ({ navigation }) => {
         // onPress={() => navigation.navigate('TVChannel', { categoryId: item.id })}
         >
           <View style={styles.catBox}>
-            {item.icon != null && item.icon != undefined ? 
+            {item.icon != null && item.icon != undefined ?
               <VectorIcon
                 size={18}
                 color={'grey'}
                 iconName={item.icon}
                 iconSet={'FontAwesome5'}
               />
-            :
+              :
               <VectorIcon
                 size={18}
                 color={'grey'}
@@ -345,7 +396,7 @@ const Dashboard = ({ navigation }) => {
               <Image source={{ uri: profileImage }} style={AppStyle.displayPic} />
             </TouchableOpacity>
           </View>
-          {bannerData.length < 0 ? (
+          {bannerData?.length < 0 ? (
             <ActivityIndicator size="large" style={styles.indicator} />
           ) : (
             <>
@@ -367,7 +418,7 @@ const Dashboard = ({ navigation }) => {
                   carouselRef={isCarousel}
                   activeDotIndex={index1}
                   tappableDots={true}
-                  dotsLength={bannerData.length}
+                  dotsLength={bannerData?.length}
                   // activeDotIndex={activeSlide}
                   containerStyle={{
                     backgroundColor: 'transparent',

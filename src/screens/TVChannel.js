@@ -42,7 +42,14 @@ const TVChannel = ({ navigation, route }) => {
         Helper.makeRequest({ url: ApiUrl.Categorylist, method: "POST", }).then((response) => {
 
             if (response.status == true) {
-                setVideoData(response.data.data)
+                if (response.deactive == 1) {
+                    Helper.showToast(response.message);
+                    Helper.setData('userdata', '');
+                    Helper.setData('token', '');
+                    navigation.replace('Login');
+                } else {
+                    setVideoData(response.data.data);
+                }
             }
             else {
 
@@ -59,7 +66,7 @@ const TVChannel = ({ navigation, route }) => {
             <View>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner:true, isChannel: true })}
+                    onPress={() => navigation.navigate('VideoPlayer', { playlistId: item.id, isPartner: true, isChannel: true })}
                     style={styles.catScroller} >
                     <Image
                         source={{
@@ -234,7 +241,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     catScroller: {
-        
+
         width: 130,
         marginRight: 10,
         marginBottom: 25,
