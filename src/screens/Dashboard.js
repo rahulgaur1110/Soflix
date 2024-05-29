@@ -281,7 +281,7 @@ const Dashboard = ({ navigation }) => {
   };
   const showCarousel = ({ item, index }) => {
     return (
-      <View>
+      <View style={styles.carouselBox}>
         <TouchableOpacity
           style={styles.carouselScroller}
           onPress={() =>
@@ -563,6 +563,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     resizeMode: 'contain',
   },
+  carouselBox: {
+    borderRadius: 10,
+  },
   carouselScroller: {
     // borderColor: AppColor.orange1,
     // borderWidth: 1,
@@ -574,7 +577,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     borderRadius: 10,
-    resizeMode: 'cover',
+    resizeMode: 'stretch',
     alignItems: 'center',
   },
 });

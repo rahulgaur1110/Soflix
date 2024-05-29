@@ -1,4 +1,5 @@
 import {
+    ActivityIndicator,
     Alert,
     Image,
     ImageBackground, Keyboard,
@@ -18,7 +19,7 @@ import AppColor from '../assets/common/AppColors'
 import validationFunctions from '../assets/common/ValidateFunction'
 import Helper from '../assets/common/lib/Helper'
 import ApiUrl from '../assets/common/lib/ApiUrl'
-import CustomAlert from '../assets/components/CustomAlert'
+import CustomAlert from '../assets/components/CustomAlert';
 
 const Register = ({ navigation }) => {
     const [name, setName] = useState('');
@@ -28,8 +29,12 @@ const Register = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showAlert, setShowAlert] = useState(false);
+    const [loading, setLoading] = useState(false);
+
 
     const callRegister = () => {
+        console.log('Register Pressed True!')
+        setLoading(true);
         Keyboard.dismiss();
         if (validationFunctions.checkAlphabet('Name', 5, 30, name) &&
             validationFunctions.checkNumber('Mobile', 7, 15, mobile) &&
@@ -38,22 +43,21 @@ const Register = ({ navigation }) => {
             validationFunctions.checkPassword('Password', 7, 15, password) &&
             validationFunctions.checkMatch('Password', password, 'ConfirmPassword', confirmPassword)) {
             // Helper.showLoader()
-
             let data = {
                 "email": email,
                 "password": password,
                 "name": name,
-                // "s_name": '',
                 "country_name": country,
                 "mobile": mobile
             }
-
-
             Helper.makeRequest({ url: ApiUrl.Register, method: 'POST', data: data })
                 .then(response => {
+
                     if (response.status == true) {
                         console.log('data:', data);
-                      setShowAlert(true);
+                        setShowAlert(true);
+                        setLoading(false);
+                        console.log('Register Pressed false!')
 
                         // Helper.hideLoader()
                         setName("")
@@ -65,12 +69,18 @@ const Register = ({ navigation }) => {
 
                     } else {
                         // Helper.hideLoader()
+                        setLoading(false);
+                        console.log('Register Pressed false!')
+
                         // alert("response" + response.message)
                         Helper.showToast(response.message);
 
                     }
                 }).catch(err => {
                     // Helper.hideLoader()
+                    setLoading(false);
+                    console.log('Register Pressed false!')
+
                     console.log(err);
                 })
         }
@@ -78,122 +88,131 @@ const Register = ({ navigation }) => {
 
     return (
         <ImageBackground style={[AppStyle.mainContainer]} resizeMode="stretch" source={AppImages.background} imageStyle={AppStyle.imageContainer}>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <ScrollView>
+            {loading ?
+                (<ActivityIndicator
+                    size={'small'}
+                    color={AppColor.white}
+                    style={{ alignSelf: 'center', top: 400 }}
+                />)
+                : (
+                    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                        <ScrollView>
 
-                    <Image style={[AppStyle.logo,]} source={AppImages.logo} />
-                    <View style={{ marginBottom: 30, marginTop: -20, alignItems: 'center' }}>
-                        <Text style={styles.title}>Create Your Account</Text>
-                    </View>
-                    <TextInput
-                        placeholder="Full Name"
-                        value={name}
-                        placeholderTextColor="#9E9E9E"
-                        style={[AppStyle.textInput]}
-                        autoCapitalize="none"
-                        onChangeText={(val) => setName(val)}
-                        maxLength={30}
-                        // secureTextEntry={data.secureTextEntry ? true : false}
-                        returnKeyType="next"
-                        onSubmitEditing={() => { Mobile.focus(); }}
-                        blurOnSubmit={false}
-                    />
-                    <TextInput
-                        placeholder="Mobile"
-                        value={mobile}
-                        placeholderTextColor="#9E9E9E"
-                        onChangeText={(val) => setMobile(val)}
-                        returnKeyType='next'
-                        style={[AppStyle.textInput]}
-                        autoCapitalize="none"
-                        maxLength={30}
-                        keyboardType="numeric"
-                        blurOnSubmit={false}
-                        onSubmitEditing={() => { Email.focus(); }}
-                        ref={(input) => { Mobile = input; }}
-                    />
+                            <Image style={[AppStyle.logo,]} source={AppImages.logo} />
+                            <View style={{ marginBottom: 30, marginTop: -20, alignItems: 'center' }}>
+                                <Text style={styles.title}>Create Your Account</Text>
+                            </View>
+                            <TextInput
+                                placeholder="Full Name"
+                                value={name}
+                                placeholderTextColor="#9E9E9E"
+                                style={[AppStyle.textInput]}
+                                autoCapitalize="none"
+                                onChangeText={(val) => setName(val)}
+                                maxLength={30}
+                                // secureTextEntry={data.secureTextEntry ? true : false}
+                                returnKeyType="next"
+                                onSubmitEditing={() => { Mobile.focus(); }}
+                                blurOnSubmit={false}
+                            />
+                            <TextInput
+                                placeholder="Mobile"
+                                value={mobile}
+                                placeholderTextColor="#9E9E9E"
+                                onChangeText={(val) => setMobile(val)}
+                                returnKeyType='next'
+                                style={[AppStyle.textInput]}
+                                autoCapitalize="none"
+                                maxLength={30}
+                                keyboardType="numeric"
+                                blurOnSubmit={false}
+                                onSubmitEditing={() => { Email.focus(); }}
+                                ref={(input) => { Mobile = input; }}
+                            />
 
-                    <TextInput
-                        placeholder="Email"
-                        value={email}
-                        autoFocus
-                        placeholderTextColor="#9E9E9E"
-                        style={[AppStyle.textInput]}
-                        autoCapitalize="none"
-                        onChangeText={(val) => setEmail(val)}
-                        maxLength={30}
-                        returnKeyType="next"
-                        onSubmitEditing={() => { Country.focus(); }}
-                        ref={(input) => { Email = input; }}
-                        blurOnSubmit={false}
-                    />
-                    <TextInput
-                        placeholder="Country"
-                        value={country}
-                        onChangeText={(val) => setCountry(val)}
-                        returnKeyType='next'
-                        placeholderTextColor="#9E9E9E"
-                        style={[AppStyle.textInput]}
-                        autoCapitalize="none"
-                        maxLength={30}
-                        onSubmitEditing={() => { Password.focus(); }}
-                        ref={(input) => { Country = input; }}
-                        blurOnSubmit={false}
-                    />
-                    <TextInput
-                        placeholder="Password"
-                        value={password}
-                        onChangeText={(val) => setPassword(val)}
-                        returnKeyType='next'
-                        placeholderTextColor="#9E9E9E"
-                        style={[AppStyle.textInput]}
-                        autoCapitalize="none"
-                        maxLength={30}
-                        secureTextEntry
-                        onSubmitEditing={() => { ConfirmPassword.focus(); }}
-                        ref={(input) => { Password = input; }}
-                        blurOnSubmit={false}
-                    />
-                    <TextInput
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChangeText={(val) => setConfirmPassword(val)}
-                        returnKeyType='next'
-                        placeholderTextColor="#9E9E9E"
-                        style={[AppStyle.textInput]}
-                        autoCapitalize="none"
-                        maxLength={30}
-                        secureTextEntry
-                        onSubmitEditing={() => { callRegister(); }}
-                        ref={(input) => { ConfirmPassword = input; }}
-                        blurOnSubmit={false}
-                    />
-                    <View style={{ paddingTop: 20 }}>
-                        <MainButton onPress={() => callRegister()}>Register</MainButton>
-                    </View>
-                    <View style={[styles.smallContainer, {
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }]}>
-                        <Text style={AppStyle.text}> Already have an account?  </Text>
-                        <TouchableOpacity style={{ paddingTop: 7 }} onPress={() => navigation.navigate('Login')}>
-                            <Text style={AppStyle.links}>Login</Text>
-                        </TouchableOpacity>
+                            <TextInput
+                                placeholder="Email"
+                                value={email}
+                                autoFocus
+                                placeholderTextColor="#9E9E9E"
+                                style={[AppStyle.textInput]}
+                                autoCapitalize="none"
+                                onChangeText={(val) => setEmail(val)}
+                                maxLength={30}
+                                returnKeyType="next"
+                                onSubmitEditing={() => { Country.focus(); }}
+                                ref={(input) => { Email = input; }}
+                                blurOnSubmit={false}
+                            />
+                            <TextInput
+                                placeholder="Country"
+                                value={country}
+                                onChangeText={(val) => setCountry(val)}
+                                returnKeyType='next'
+                                placeholderTextColor="#9E9E9E"
+                                style={[AppStyle.textInput]}
+                                autoCapitalize="none"
+                                maxLength={30}
+                                onSubmitEditing={() => { Password.focus(); }}
+                                ref={(input) => { Country = input; }}
+                                blurOnSubmit={false}
+                            />
+                            <TextInput
+                                placeholder="Password"
+                                value={password}
+                                onChangeText={(val) => setPassword(val)}
+                                returnKeyType='next'
+                                placeholderTextColor="#9E9E9E"
+                                style={[AppStyle.textInput]}
+                                autoCapitalize="none"
+                                maxLength={30}
+                                secureTextEntry
+                                onSubmitEditing={() => { ConfirmPassword.focus(); }}
+                                ref={(input) => { Password = input; }}
+                                blurOnSubmit={false}
+                            />
+                            <TextInput
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChangeText={(val) => setConfirmPassword(val)}
+                                returnKeyType='next'
+                                placeholderTextColor="#9E9E9E"
+                                style={[AppStyle.textInput]}
+                                autoCapitalize="none"
+                                maxLength={30}
+                                secureTextEntry
+                                onSubmitEditing={() => { callRegister(); }}
+                                ref={(input) => { ConfirmPassword = input; }}
+                                blurOnSubmit={false}
+                            />
+                            <View style={{ paddingTop: 20 }}>
+                                <MainButton onPress={() => callRegister()}>Register</MainButton>
+                            </View>
+                            <View style={[styles.smallContainer, {
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }]}>
+                                <Text style={AppStyle.text}> Already have an account?  </Text>
+                                <TouchableOpacity style={{ paddingTop: 7 }} onPress={() => navigation.navigate('Login')}>
+                                    <Text style={AppStyle.links}>Login</Text>
+                                </TouchableOpacity>
 
-                    </View>
-                    {showAlert && <CustomAlert
-                        visible={showAlert}
-                        title="Registered successfully!"
-                        message="Activation link has been sent to your email. Please verify."
-                        onClose={()=> setShowAlert(false)} />}
-                </ScrollView>
-            </KeyboardAvoidingView>
+                            </View>
+                            {showAlert && <CustomAlert
+                                visible={showAlert}
+                                title="Registered successfully!"
+                                message="Activation link has been sent to your email. Please verify."
+                                onClose={() => setShowAlert(false)} />}
+
+                        </ScrollView>
+                    </KeyboardAvoidingView>
+                )}
         </ImageBackground>
     )
 }
 
-export default Register
+export default Register;
 
 const styles = StyleSheet.create({
     smallContainer: {
